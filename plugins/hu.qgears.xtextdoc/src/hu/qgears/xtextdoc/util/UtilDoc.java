@@ -65,10 +65,13 @@ public class UtilDoc {
 	}
 
 	/**
-	 * Reads the comment documentation for the EObject.
+	 * Reads the comment documentation for the EObject. Never returns
+	 * <code>null</code>, but returns the String "No documentation" if no
+	 * comment is assigned to given object.
 	 * 
 	 * @param o
 	 * @return
+	 * @see #getComment(EObject)
 	 */
 	public static String getCommentDocumentation(EObject o) {
 		String doc = findComment(o);
@@ -76,6 +79,17 @@ public class UtilDoc {
 			doc = "No documentation";
 		}
 		return doc;
+	}
+
+	/**
+	 * Reads the comment documentation for the EObject. Returns
+	 * <code>null</code> if no comment is assigned to given object.
+	 * 
+	 * @param o
+	 * @return
+	 */
+	public static String getComment(EObject o) {
+		return findComment(o);
 	}
 
 	public static void getEMFDocumentation(StringBuilder sb, EClass eClass, EStructuralFeature eFeature,
