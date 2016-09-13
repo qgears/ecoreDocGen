@@ -4,13 +4,19 @@ import "http://www.eclipse.org/emf/2002/Ecore"
 
 pattern eCoreDocumentation(host:ENamedElement, ann:EAnnotation, doc:EString) 
 {
-	ENamedElement.eAnnotations(host,ann);
-	EAnnotation.source(ann,"http://www.eclipse.org/emf/2002/GenModel");
+	find eCoreDocAnnotation(host,ann);
 	EAnnotation.details(ann,mapEntry);
 	EStringToStringMapEntry.key(mapEntry,"documentation");
 	EStringToStringMapEntry.value(mapEntry,doc);
 }
 
+/**
+ * Lists ENamedElement - documentation EAnnotation pairs
+ */
+pattern eCoreDocAnnotation(host:ENamedElement, ann:EAnnotation){
+	ENamedElement.eAnnotations(host,ann);
+	EAnnotation.source(ann,"http://www.eclipse.org/emf/2002/GenModel");
+}
 @Constraint(
 	location = host,
 	targetEditorId = "org.eclipse.emf.ecore.presentation.EcoreEditorID",
