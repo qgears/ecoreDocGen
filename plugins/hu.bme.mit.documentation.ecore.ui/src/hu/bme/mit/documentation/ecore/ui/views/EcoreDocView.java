@@ -1,7 +1,6 @@
 package hu.bme.mit.documentation.ecore.ui.views;
 
-import hu.bme.mit.documentation.ecore.ui.internal.Activator;
-
+import java.util.Collection;
 import java.util.EventObject;
 import java.util.concurrent.Callable;
 
@@ -36,8 +35,11 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
 
+import ecoredocgen.incquery.ECoreDocAnnotationMatch;
+import ecoredocgen.incquery.ECoreDocAnnotationMatcher;
 import ecoredocgen.incquery.ECoreDocumentationMatch;
 import ecoredocgen.incquery.ECoreDocumentationMatcher;
+import hu.bme.mit.documentation.ecore.ui.internal.Activator;
 
 public class EcoreDocView extends ViewPart {
 
@@ -80,8 +82,15 @@ public class EcoreDocView extends ViewPart {
 					EMFScope emfScope = new EMFScope(target.eResource());
 					IncQueryEngine engine = IncQueryEngine.on(emfScope);
 					ECoreDocumentationMatcher matcher = ECoreDocumentationMatcher.on(engine);
-					for (ECoreDocumentationMatch m :matcher.getAllMatches(target, null, null)) {
-						setCurrentState(m.getDoc(), m.getHost(), m.getAnn());
+					ECoreDocAnnotationMatcher annMatcher = ECoreDocAnnotationMatcher.on(engine);
+					Collection<ECoreDocAnnotationMatch> annotations = annMatcher.getAllMatches(target, null);
+					for (ECoreDocAnnotationMatch ma : annotations) {
+						String doc = "";
+						Collection<ECoreDocumentationMatch> allMatches = matcher.getAllMatches(ma.getHost(), ma.getAnn(), null);
+						for (ECoreDocumentationMatch m :allMatches) {
+							 doc = m.getDoc();
+						}
+						setCurrentState(doc, ma.getHost(), ma.getAnn());
 					}
 				} catch (IncQueryException e) {
 					Activator.getDefault().getLog().log(new Status(IStatus.ERROR, Activator.PLUGIN_ID, e.getMessage()));
@@ -150,7 +159,7 @@ public class EcoreDocView extends ViewPart {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				if (currentElement!=null && currentAnnotation!=null) {
-					if (!currentAnnotation.getDetails().get("documentation").equals(text.getText())) {
+					if (!text.getText().equals(currentAnnotation.getDetails().get("documentation"))) {
 						updateDocContentsInModel();
 					}
 				}
