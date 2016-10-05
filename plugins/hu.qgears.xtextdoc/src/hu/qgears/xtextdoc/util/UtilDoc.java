@@ -47,10 +47,13 @@ public class UtilDoc {
 					break;
 				}
 				if (leaf.getGrammarElement() instanceof TerminalRule) {
-					TerminalRule terminalRule = (TerminalRule) leaf.getGrammarElement();
-					String ruleN = terminalRule.getName();
-					if (leaf.isHidden() && ruleN.equalsIgnoreCase(ruleName)) {
-						last = leaf;
+					if(leaf.getSemanticElement()==o)
+					{
+						TerminalRule terminalRule = (TerminalRule) leaf.getGrammarElement();
+						String ruleN = terminalRule.getName();
+						if (leaf.isHidden() && ruleN.equalsIgnoreCase(ruleName)) {
+							last = leaf;
+						}
 					}
 				}
 			}

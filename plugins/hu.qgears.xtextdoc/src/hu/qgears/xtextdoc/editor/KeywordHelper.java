@@ -63,7 +63,7 @@ public class KeywordHelper {
 					//if root element then return the class type
 
 					//return (EObject) semantic.eClass();
-					return new EObjectWrapper(semantic.eClass(), null, null);
+					return new EObjectWrapper(semantic, semantic.eClass(), null, null);
 
 				} else {	
 					//else return the element as a feature of its parent
@@ -76,7 +76,7 @@ public class KeywordHelper {
 								for (EObject eObject : allReferencedObjects) {
 									if (eObject.equals(semantic)) {
 										//return (EObject) f;
-										return new EObjectWrapper(parentSemanticElementEClass, f, eObject.eClass());
+										return new EObjectWrapper(eObject, parentSemanticElementEClass, f, eObject.eClass());
 									}
 								}
 							}
@@ -93,14 +93,14 @@ public class KeywordHelper {
 					//return feature;
 					Object object = semantic.eGet(feature);
 					if (object instanceof EObject) {
-						return new EObjectWrapper(semantic.eClass(), feature, ((EObject) object).eClass());
+						return new EObjectWrapper((EObject)object, semantic.eClass(), feature, ((EObject) object).eClass());
 					} else if (object instanceof EObjectResolvingEList<?>) {
 						EObjectResolvingEList<?> eObjectResolvingEList = (EObjectResolvingEList<?>) object;
 						EObject eo = (EObject) eObjectResolvingEList.get(0);
-						return new EObjectWrapper(semantic.eClass(), feature, eo.eClass());
+						return new EObjectWrapper(eo, semantic.eClass(), feature, eo.eClass());
 						
 					} else {
-						return new EObjectWrapper(semantic.eClass(), feature, feature.getEType().eClass());
+						return new EObjectWrapper(null, semantic.eClass(), feature, feature.getEType().eClass());
 					}
 				}
 			}
