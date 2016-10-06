@@ -5,7 +5,7 @@
 		<groupId>hu.qgears.gendoc</groupId>
 		<artifactId>metamodel_docgen_parent</artifactId>
 		<version>0.9.9-SNAPSHOT</version>
-		<relativePath>../parent-poms/root/pom.xml</relativePath>
+		<relativePath>../../parent-poms/root/pom.xml</relativePath>
 	</parent>
 	<groupId>hu.qgears.gendoc</groupId>
 	<artifactId>hu.qgears.gendoc.target</artifactId>

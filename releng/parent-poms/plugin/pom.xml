@@ -34,4 +34,23 @@ POM for Eclipse Plug-ins that are part of the ecoreDocGen utility, and utilize i
 			</plugin>
 		</plugins>
 	</build>
+	<profiles>
+            <!-- This profile is activated when the version bump script is executed.
+                    It adds each the aggregator pom of the component (../../) as a child module 
+                    of this component, so the tycho-version-plugin will be able to detect parent-child 
+                    relationships propertly, so also changes the version string in the parent pom reference.
+            --> 
+            <profile>
+                    <id>versionbump</id>
+                    <activation>
+                            <property>
+                                    <name>newVersion</name>
+                            </property>
+                    </activation>
+                    <modules>
+                            <module>../../qgears/hu.qgears.gendoc.parent</module>
+                    </modules>
+            </profile>
+    </profiles>
+
 </project>

@@ -1,0 +1,17 @@
+target "EcoreDocGen Target Platform"
+
+with requirements
+
+location "http://download.eclipse.org/incquery/updates-extra/release" incquery-repo {
+	org.eclipse.incquery.databinding.runtime [1.1.0.201512031022,1.1.0.201512031022]
+}
+
+location "http://192.168.1.116:8888/nexus/content/repositories/eclipse-mars/" eclipse-mars {
+	org.eclipse.xtext.sdk.feature.group [2.8.3.v201506010551,2.8.3.v201506010551]
+	org.eclipse.xtext.doc [2.8.3.v201506010551,2.8.3.v201506010551]
+	
+	org.eclipse.emf.sdk.feature.group [2.11.0.v20150601-0402,2.11.0.v20150601-0402] 
+	org.eclipse.emf.ecore.feature.group  [2.11.0.v20150512-0501,2.11.0.v20150512-0501]
+	org.eclipse.emf.transaction.feature.group [1.9.0.201506010221,1.9.0.201506010221]
+	org.eclipse.emf.ecore.xcore.feature.group [1.3.0.v20150602-0808,1.3.0.v20150602-0808]
+}

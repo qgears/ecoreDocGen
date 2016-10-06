@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>hu.qgears.gendoc</groupId>
+		<artifactId>metamodel_docgen_plugin</artifactId>
+		<version>0.4.0-SNAPSHOT</version>
+		<relativePath>../../parent-poms/plugin/pom.xml</relativePath>
+	</parent>
+	<groupId>hu.qgears.gendoc</groupId>
+	<artifactId>hu.qgears.gendoc.update</artifactId>
+	<version>0.4.0-SNAPSHOT</version>
+	<packaging>eclipse-repository</packaging>
+	<properties>
+		<package-p2-script>${project.basedir}/../repository-builder/packaging-p2composite.ant</package-p2-script>
+		 <p2subFolder>ecoreDocGen</p2subFolder>
+         <p2Label>"EcoreDocGen P2 repository extended by Q-Gears"</p2Label>
+	</properties>
+	
+<profiles>
+<profile>
+	<id>release</id>
+	<activation>
+	        <property>
+	                <!-- Publishing release into this P2 repository.
+	                       This profile is activated when the target folder is specified.
+	                -->
+	                <name>target-composite-repository</name>
+	        </property>
+	</activation>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho.extras</groupId>
+				<artifactId>tycho-eclipserun-plugin</artifactId>
+				<version>${tycho.version}</version>
+				<executions>
+					<execution>
+						<id>add-p2-composite-repository</id>
+						<phase>package</phase>
+						<goals>
+							<goal>eclipse-run</goal>
+						</goals>
+						<configuration>
+							<!-- IMPORTANT: DO NOT split the arg line -->
+							<appArgLine>-application org.eclipse.ant.core.antRunner -data ${project.build.directory}/antrunner-ws -buildfile ${package-p2-script} p2.composite.add -Dsite.label=${p2Label} -Dproject.build.directory=${project.build.directory} -DunqualifiedVersion=${unqualifiedVersion} -DbuildQualifier=${buildQualifier} -Dsoftware.download.area=${target-composite-repository} -Dupdates.dir=${p2subFolder}</appArgLine>
+							<repositories>
+								<repository>
+									<id>eclipse-mars</id>
+									<layout>p2</layout>
+									<url>http://download.eclipse.org/releases/mars/</url>
+								</repository>
+							</repositories>
+							<dependencies>
+								<dependency>
+									<artifactId>org.eclipse.ant.core</artifactId>
+									<type>eclipse-plugin</type>
+								</dependency>
+								<dependency>
+									<artifactId>org.apache.ant</artifactId>
+									<type>eclipse-plugin</type>
+								</dependency>
+								<dependency>
+									<artifactId>org.eclipse.equinox.p2.repository.tools</artifactId>
+									<type>eclipse-plugin</type>
+								</dependency>
+								<dependency>
+									<artifactId>org.eclipse.equinox.p2.core.feature</artifactId>
+									<type>eclipse-feature</type>
+								</dependency>
+								<dependency>
+									<artifactId>org.eclipse.equinox.p2.extras.feature</artifactId>
+									<type>eclipse-feature</type>
+								</dependency>
+								<dependency>
+									<artifactId>org.eclipse.equinox.ds</artifactId>
+									<type>eclipse-plugin</type>
+								</dependency>
+							</dependencies>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+	</profile>
+	</profiles>
+</project>
