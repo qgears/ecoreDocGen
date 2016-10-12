@@ -60,11 +60,79 @@ public class UtilDoc {
 			if (last != null) {
 				String comment = last.getText();
 				if (comment.matches("(?s)" + startTag + ".*")) {
-					returnValue = comment.replace("/*", "").replace("*/", "").replace("*", "");
+					returnValue=unescapeComment(comment);
 				}
 			}
 		}
 		return returnValue;
+	}
+	/**
+	 * Unescape a comment block by removing * characters from the beginning of the lines and trimming all lines.
+	 * Trailing \n is also removed.
+	 * @param comment
+	 * @return
+	 */
+	private static String unescapeComment(String comment) {
+		StringBuilder ret=new StringBuilder();
+		String r=comment;
+		int charAt=0;
+		if(r.startsWith("/**"))
+		{
+			charAt+=3;
+		}
+		else if(r.startsWith("/*"))
+		{
+			charAt+=2;
+		}
+		int nline=0;
+		while(charAt<r.length())
+		{
+			while(charAt<r.length() && Character.isWhitespace(r.charAt(charAt)))
+			{
+				charAt++;
+			}
+			if(r.startsWith("* ", charAt))
+			{
+				charAt+=2;
+			}else if(r.startsWith("*"))
+			{
+				charAt+=1;
+			}
+			int nextNewLine=r.indexOf("\r\n", charAt);
+			int nextNewLine2=r.indexOf("\n",charAt);
+			int endline;
+			int separatorlength;
+			boolean lastLine=false;
+			if(nextNewLine>=0 && nextNewLine<nextNewLine2)
+			{
+				endline=nextNewLine;
+				separatorlength=2;
+			}else if(nextNewLine2>=0)
+			{
+				endline=nextNewLine2;
+				separatorlength=1;
+			}else
+			{
+				endline=r.length();
+				separatorlength=0;
+				lastLine=true;
+				if(r.startsWith("*/", endline-2))
+				{
+					separatorlength=2;
+					endline-=2;
+				}
+			}
+			String line=r.substring(charAt, endline);
+			String trimmed=line.trim();
+			if(nline>0&&(trimmed.length()>0||!lastLine))
+			{
+				ret.append('\n');
+			}
+			ret.append(trimmed);
+			charAt=endline+separatorlength;
+			nline++;
+		}
+		return ret.toString();
 	}
 
 	/**
