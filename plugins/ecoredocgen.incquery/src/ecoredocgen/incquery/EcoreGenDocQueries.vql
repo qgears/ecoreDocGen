@@ -18,12 +18,12 @@ pattern eCoreDocAnnotation(host:ENamedElement, ann:EAnnotation){
 	EAnnotation.source(ann,"http://www.eclipse.org/emf/2002/GenModel");
 }
 @Constraint(
-	location = host,
 	targetEditorId = "org.eclipse.emf.ecore.presentation.EcoreEditorID",
 	message = "$host$ is missing the EcoreGen Documentation",
-	severity = "warning"
+	severity = "warning",
+	key = {host}
 )
-@QueryExplorer(display = true, message = "$host$ is missing the documentation completely")
+@QueryExplorer( message = "$host$ is missing the documentation completely")
 pattern missingEcoreDocumentation(host:ENamedElement)
 {
 	neg find eCoreDocumentation(host, _ann, _doc);
@@ -40,12 +40,12 @@ pattern missingEcoreGenDocumentation_EPackage(host:EPackage)
 }
 
 @Constraint(
-	location = host,
 	targetEditorId = "org.eclipse.emf.ecore.presentation.EcoreEditorID",
 	message = "$host$ has an empty EcoreGen Documentation",
-	severity = "warning"
+	severity = "warning",
+	key = {host}
 )
-@QueryExplorer(display = true, message = "$host$ has an empty EcoreGen Documentation")
+@QueryExplorer( message = "$host$ has an empty EcoreGen Documentation")
 pattern zeroLengthEcoreGenDocumentation(host:ENamedElement)
 {
 	find eCoreDocumentation(host,_ann, doc);
@@ -53,12 +53,12 @@ pattern zeroLengthEcoreGenDocumentation(host:ENamedElement)
 }
 
 @Constraint(
-	location = host,
 	targetEditorId = "org.eclipse.emf.ecore.presentation.EcoreEditorID",
 	severity = "warning",
-	message = "$host$ has a suspiciously short documentation"
+	message = "$host$ has a suspiciously short documentation",
+	key = {host}
 )
-@QueryExplorer(display = true, message = "$host$ has a suspiciously short documentation")
+@QueryExplorer( message = "$host$ has a suspiciously short documentation")
 pattern tooShortEcoreGenDocumentation(host:ENamedElement)
 {
 	find eCoreDocumentation(host,_ann, doc);

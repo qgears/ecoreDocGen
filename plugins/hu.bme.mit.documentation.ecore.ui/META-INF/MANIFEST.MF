@@ -4,14 +4,14 @@ Bundle-Name: Ecore Documentation Generator UI
 Bundle-SymbolicName: hu.bme.mit.documentation.ecore.ui;singleton:=true
 Bundle-Version: 0.5.2.qualifier
 Bundle-Activator: hu.bme.mit.documentation.ecore.ui.internal.Activator
+Bundle-Vendor: Budapest University of Technology and Economics
+Export-Package: hu.bme.mit.documentation.ecore.ui.handlers
 Require-Bundle: org.eclipse.ui,
  hu.bme.mit.documentation.ecore,
  ecoredocgen.incquery,
- org.eclipse.incquery.runtime;bundle-version="[0.9.0,1.1.1)",
  org.eclipse.emf.ecore.edit;bundle-version="2.7.1",
  org.eclipse.core.runtime;bundle-version="3.7.0",
- org.eclipse.core.resources;bundle-version="3.7.101"
-Bundle-ActivationPolicy: lazy
+ org.eclipse.core.resources;bundle-version="3.7.101",
+ org.eclipse.viatra.query.runtime;bundle-version="[1.2.0,2.0.0)"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Bundle-Vendor: Budapest University of Technology and Economics, Fault Tolerant Systems Research Group
-Export-Package: hu.bme.mit.documentation.ecore.ui.handlers
+Bundle-ActivationPolicy: lazy

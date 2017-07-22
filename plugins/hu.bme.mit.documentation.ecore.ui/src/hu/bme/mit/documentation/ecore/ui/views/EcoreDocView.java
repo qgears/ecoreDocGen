@@ -14,9 +14,6 @@ import org.eclipse.emf.ecore.EcoreFactory;
 import org.eclipse.emf.edit.command.ChangeCommand;
 import org.eclipse.emf.edit.domain.EditingDomain;
 import org.eclipse.emf.edit.domain.IEditingDomainProvider;
-import org.eclipse.incquery.runtime.api.IncQueryEngine;
-import org.eclipse.incquery.runtime.emf.EMFScope;
-import org.eclipse.incquery.runtime.exception.IncQueryException;
 import org.eclipse.jface.resource.JFaceColors;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ISelection;
@@ -34,6 +31,9 @@ import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.viatra.query.runtime.api.ViatraQueryEngine;
+import org.eclipse.viatra.query.runtime.emf.EMFScope;
+import org.eclipse.viatra.query.runtime.exception.ViatraQueryException;
 
 import ecoredocgen.incquery.ECoreDocAnnotationMatch;
 import ecoredocgen.incquery.ECoreDocAnnotationMatcher;
@@ -80,7 +80,7 @@ public class EcoreDocView extends ViewPart {
 					text.setEnabled(true); // make sure the text can be used for adding a new doc field
 					// through the mouse listener below
 					EMFScope emfScope = new EMFScope(target.eResource());
-					IncQueryEngine engine = IncQueryEngine.on(emfScope);
+					ViatraQueryEngine engine = ViatraQueryEngine.on(emfScope);
 					ECoreDocumentationMatcher matcher = ECoreDocumentationMatcher.on(engine);
 					ECoreDocAnnotationMatcher annMatcher = ECoreDocAnnotationMatcher.on(engine);
 					Collection<ECoreDocAnnotationMatch> annotations = annMatcher.getAllMatches(target, null);
@@ -92,7 +92,7 @@ public class EcoreDocView extends ViewPart {
 						}
 						setCurrentState(doc, ma.getHost(), ma.getAnn());
 					}
-				} catch (IncQueryException e) {
+				} catch (ViatraQueryException e) {
 					Activator.getDefault().getLog().log(new Status(IStatus.ERROR, Activator.PLUGIN_ID, e.getMessage()));
 				}
 			}

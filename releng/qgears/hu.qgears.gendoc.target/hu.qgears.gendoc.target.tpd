@@ -2,13 +2,16 @@ target "EcoreDocGen Target Platform"
 
 with requirements
 
-location "http://download.eclipse.org/incquery/updates-extra/release" incquery-repo {
-	org.eclipse.incquery.databinding.runtime [1.1.0.201512031022,1.1.0.201512031022]
+location "http://download.eclipse.org/viatra/updates/release" viatra-repo {
+	org.eclipse.viatra.addon.databinding.runtime.feature.feature.group [1.6.0.201706141007,1.6.0.201706141007]
+	org.eclipse.viatra.query.runtime.feature.feature.group [1.6.0.201706141007,1.6.0.201706141007]
+	org.eclipse.viatra.transformation.runtime.emf.feature.feature.group [1.6.0.201706141007,1.6.0.201706141007] 
 }
 
-location "http://192.168.1.116:8888/nexus/content/repositories/eclipse-mars/" eclipse-mars {
-	org.eclipse.xtext.sdk.feature.group [2.8.3.v201506010551,2.8.3.v201506010551]
-	org.eclipse.xtext.doc [2.8.3.v201506010551,2.8.3.v201506010551]
+location "http://buildserver/mirror/eclipse-mars-mirror/" eclipse-mars {
+	org.eclipse.xtext.sdk.feature.group [2.9.1.v201512180746,2.9.1.v201512180746]
+	org.eclipse.xtext.doc [2.9.1.v201512180746,2.9.1.v201512180746]
+	org.eclipse.xtext.xbase.lib.feature.group [2.9.1.v201512180746,2.9.1.v201512180746]
 	
 	org.eclipse.emf.sdk.feature.group [2.11.0.v20150601-0402,2.11.0.v20150601-0402] 
 	org.eclipse.emf.ecore.feature.group  [2.11.0.v20150512-0501,2.11.0.v20150512-0501]

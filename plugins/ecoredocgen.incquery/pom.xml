@@ -49,8 +49,8 @@
 			</plugin>
 			<!-- Setting up generator -->
 			<plugin>
-				<groupId>org.eclipse.incquery</groupId>
-				<artifactId>incquery-maven-plugin</artifactId>
+				<groupId>org.eclipse.viatra</groupId>
+				<artifactId>viatra-maven-plugin</artifactId>
 				<version>${incquery-gen-version}</version>
 				<!-- Binding execution to the code generation lifecycle phase -->
 				<executions>
