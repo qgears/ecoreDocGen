@@ -2,7 +2,7 @@
 <feature
       id="hu.bme.mit.ecoredocgen.validation.feature"
       label="Ecore Documentation Validation Feature"
-      version="0.5.2.qualifier"
+      version="2.0.0.qualifier"
       provider-name="Budapest University of Technology and Economics">
 
    <description url="https://github.com/abelhegedus/ecoreDocGen">
