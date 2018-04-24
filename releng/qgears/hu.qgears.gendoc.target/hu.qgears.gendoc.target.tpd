@@ -8,7 +8,7 @@ location "http://download.eclipse.org/viatra/updates/release" viatra-repo {
 	org.eclipse.viatra.transformation.runtime.emf.feature.feature.group [1.6.0.201706141007,1.6.0.201706141007] 
 }
 
-location "http://buildserver/mirror/eclipse-mars-mirror/" eclipse-mars {
+location "https://buildserver.qgears.net/mirror/eclipse-mars-mirror/" eclipse-mars {
 	org.eclipse.xtext.sdk.feature.group [2.9.1.v201512180746,2.9.1.v201512180746]
 	org.eclipse.xtext.doc [2.9.1.v201512180746,2.9.1.v201512180746]
 	org.eclipse.xtext.xbase.lib.feature.group [2.9.1.v201512180746,2.9.1.v201512180746]
@@ -16,5 +16,5 @@ location "http://buildserver/mirror/eclipse-mars-mirror/" eclipse-mars {
 	org.eclipse.emf.sdk.feature.group [2.11.0.v20150601-0402,2.11.0.v20150601-0402] 
 	org.eclipse.emf.ecore.feature.group  [2.11.0.v20150512-0501,2.11.0.v20150512-0501]
 	org.eclipse.emf.transaction.feature.group [1.9.0.201506010221,1.9.0.201506010221]
-	org.eclipse.emf.ecore.xcore.feature.group [1.3.0.v20150602-0808,1.3.0.v20150602-0808]
+	org.eclipse.emf.ecore.xcore.feature.group [1.3.2.v20160209-0349,1.3.2.v20160209-0349]
 }

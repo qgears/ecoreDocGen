@@ -10,9 +10,6 @@
  *******************************************************************************/
 package hu.bme.mit.documentation.ecore.ui.handlers;
 
-import hu.bme.mit.documentation.generator.ecore.IDocGenerator;
-import hu.bme.mit.documentation.generator.ecore.UtilDocGenerator;
-
 import java.io.File;
 
 import org.eclipse.core.commands.AbstractHandler;
@@ -23,9 +20,13 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.handlers.HandlerUtil;
+
+import hu.bme.mit.documentation.generator.ecore.IDocGenerator;
+import hu.bme.mit.documentation.generator.ecore.UtilDocGenerator;
 
 /**
  * @author Abel Hegedus, Adam Horvath
@@ -47,8 +48,8 @@ public abstract class AbstractGenerateEcoreDoc extends AbstractHandler {
             for (Object element : ((IStructuredSelection) selection).toList()) {
                 if (element instanceof IFile) {
                     IFile file = (IFile) element;
-                    if(file.getFileExtension().equals("ecore")){
-                        URI ecoreURI = URI.createPlatformResourceURI(file.getFullPath().toString(), true);
+                    if(file.getFileExtension().equals("ecore") || file.getFileExtension().equals("xcore")){
+                        ResourceSet model = loadModel(file);
                         
                         String ecoreFileName = file.getName().substring(0,file.getName().indexOf("."));
                         String outputFileName = ecoreFileName+"."+getFileExtension();
@@ -67,7 +68,7 @@ public abstract class AbstractGenerateEcoreDoc extends AbstractHandler {
                             filterFile = folder.getFile(filterFileName);
                         }
                         IDocGenerator docGen = getCodeGenerator();
-                        UtilDocGenerator.generateDocForEPackage(ecoreURI, 
+                        UtilDocGenerator.generateDocForResourceSet(model, 
                         		new File(outFile.getLocationURI()), 
                         		new File(filterFile.getLocationURI()),
                         		docGen);
@@ -77,6 +78,13 @@ public abstract class AbstractGenerateEcoreDoc extends AbstractHandler {
         }
 
         return null;
+    }
+    
+    protected ResourceSet loadModel(IFile file){
+        ResourceSet set = UtilDocGenerator.newResourceSet();
+        URI ecoreURI = URI.createPlatformResourceURI(file.getFullPath().toString(), true);
+        set.getResource(ecoreURI, true);
+        return set;
     }
     
     /**

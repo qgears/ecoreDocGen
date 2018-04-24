@@ -1,12 +1,11 @@
 package hu.qgears.gendoc.app;
 
-import hu.bme.mit.documentation.generator.ecore.EPackageDocGen;
-import hu.bme.mit.documentation.generator.ecore.EPackageDocGenHtml;
-import hu.bme.mit.documentation.generator.ecore.IDocGenerator;
-import hu.bme.mit.documentation.generator.ecore.UnsupportedTypeException;
-import hu.bme.mit.documentation.generator.ecore.UtilDocGenerator;
-
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
@@ -14,8 +13,22 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.eclipse.emf.ecore.xcore.XcoreStandaloneSetup;
+import org.eclipse.emf.ecore.xcore.resource.XcoreResource;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
+import org.eclipse.xtext.EcoreUtil2;
+import org.eclipse.xtext.linking.lazy.LazyLinkingResource;
+import org.eclipse.xtext.util.CancelIndicator;
+
+import hu.bme.mit.documentation.generator.ecore.EPackageDocGen;
+import hu.bme.mit.documentation.generator.ecore.EPackageDocGenHtml;
+import hu.bme.mit.documentation.generator.ecore.IDocGenerator;
+import hu.bme.mit.documentation.generator.ecore.UnsupportedTypeException;
+import hu.bme.mit.documentation.generator.ecore.UtilDocGenerator;
 
 /**
  * Command-line application for generating documentation.
@@ -63,15 +76,15 @@ public class GenerateDocApplication implements IApplication {
 			if(cli.hasOption(ARG_FILTER_FILE)){
 				filterFile = cli.getOptionValue(ARG_FILTER_FILE);
 			}
-			URI metamodelUri = URI.createFileURI(metamodelFile);
+			ResourceSet set = loadMetamodel(new File(metamodelFile));
 			File output = new File(outputFile);
 			IDocGenerator docGen = getDocGenerator(format);
 			File filter = null;
 			if(filterFile!=null){
 				filter = new File(filterFile);
 			}
-			System.out.println("Generating documentation from "+metamodelUri.toString() + " to "+output.toString()+" in format "+format);
-			UtilDocGenerator.generateDocForEPackage(metamodelUri, output, filter, docGen);
+			System.out.println("Generating documentation from "+metamodelFile + " to "+output.toString()+" in format "+format);
+			UtilDocGenerator.generateDocForResourceSet(set, output, filter, docGen);
 			System.out.println("Documentation generation finished without errors.");
 		}
 		else{
@@ -80,6 +93,31 @@ public class GenerateDocApplication implements IApplication {
 					"At least the following argumens must be specified: -format, -outputFile, -metamodelFile");
 		}
 		return EXIT_OK;
+	}
+
+	
+
+	private ResourceSet loadMetamodel(File m) throws IOException {
+		XcoreStandaloneSetup.doSetup();
+		ResourceSet rs = UtilDocGenerator.newResourceSet();
+		loadMetamodelRec(rs, m);
+		List<Resource> foundRes = new ArrayList<Resource>(rs.getResources());
+		for (Resource res : foundRes) {
+			EcoreUtil2.resolveLazyCrossReferences(res,CancelIndicator.NullImpl);
+		}
+		return rs;
+	}
+	
+	private void loadMetamodelRec(ResourceSet rs, File m) {
+		if (m.isFile() && m.getName().endsWith(".xcore") || m.getName().endsWith(".ecore")) {
+			URI uri = URI.createFileURI(m.getAbsolutePath());
+			System.out.println("Loading "+uri);
+			rs.getResource(uri,true);
+		} else if (m.isDirectory()) {
+			for (File f : m.listFiles()) {
+				loadMetamodelRec(rs, f);
+			}
+		}
 	}
 
 	@Override
