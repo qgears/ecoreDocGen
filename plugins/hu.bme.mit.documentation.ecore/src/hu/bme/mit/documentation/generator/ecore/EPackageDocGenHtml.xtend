@@ -218,7 +218,24 @@ function getElementsByTagNames(list,obj) {
 	    				'''</h6>'''.appendToBuilder	
 					]	        		
         		}
-
+        		
+        		val br = cls.backref
+        		if (!br.knownSubtypes.empty) {
+        			'''<h6>Known subtypes</h6>'''.appendToBuilder
+        			br.knownSubtypes.sortBy[name].forEach[
+        				'''<span>'''.appendToBuilder
+        				'''<a href="#«escapeLabel(it.EPackage.nsPrefix+"."+it.name)»">«it.name»</a> | '''.appendToBuilder    	
+        				'''</span>'''.appendToBuilder
+        			]
+        		}
+        		if (!br.usedByReferences.empty) {
+        			'''<h6>Used by</h6>'''.appendToBuilder
+        			br.usedByReferences.sortBy[EContainingClass.name + name].forEach[
+        				'''<span>'''.appendToBuilder
+        				'''<a href="#«escapeLabel(it.EContainingClass.EPackage.nsPrefix+it.EContainingClass.name)+"."+it.name»">«it.EContainingClass.name +"::"+  it.name»</a> | '''.appendToBuilder    	
+        				'''</span>'''.appendToBuilder
+        			]
+        		}
         		cls.documentEClass("" + escapeLabel(cls.EPackage.nsPrefix+"."+cls.name))
         		
         		//if(cls.EOperations.size + cls.EStructuralFeatures.size > 2){
@@ -448,7 +465,7 @@ function getElementsByTagNames(list,obj) {
     
     def private documentENamedElement(ENamedElement elem, String parentId, String color)
     '''
-    <div id="«parentId+"."+elem.name»" class="teletype">«IF color != null»<div style="color:«color»">«ENDIF»«escapeText(elem.name)»«IF color != null»</div>«ENDIF»</div>
+    <div id="«parentId+"."+elem.name»" class="teletype">«IF color != null»<div style="color:«color»">«ENDIF»<a href="#«parentId+"."+elem.name»" >«escapeText(elem.name)»</a>«IF color != null»</div>«ENDIF»</div>
     '''
     
     //(«typePckg.nsURI»)
@@ -491,6 +508,7 @@ function getElementsByTagNames(list,obj) {
     '''
     «IF feat.derived»
 	    «feat.documentETypedElement(parentId, "blue")»
+	     <div class="label">Derived</div>
     «ELSE»
     	«feat.documentETypedElement(parentId, null)»
     «ENDIF»
@@ -633,5 +651,9 @@ function getElementsByTagNames(list,obj) {
 	        </html>
 	        '''.appendToBuilder
 	}
+	
+	 def private backref(EClass cls) {
+	 	EcoreHelper.getBackReferences(cls)
+	 }
 	
 }
