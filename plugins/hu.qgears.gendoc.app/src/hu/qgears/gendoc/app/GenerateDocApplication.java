@@ -26,6 +26,7 @@ import org.eclipse.xtext.util.CancelIndicator;
 
 import hu.bme.mit.documentation.generator.ecore.EPackageDocGen;
 import hu.bme.mit.documentation.generator.ecore.EPackageDocGenEclipseHelp;
+import hu.bme.mit.documentation.generator.ecore.EPackageDocGenHtml;
 import hu.bme.mit.documentation.generator.ecore.IDocGenerator;
 import hu.bme.mit.documentation.generator.ecore.UnsupportedTypeException;
 import hu.bme.mit.documentation.generator.ecore.UtilDocGenerator;
@@ -44,11 +45,12 @@ public class GenerateDocApplication implements IApplication {
 	private static final String ARG_METAMODEL_FILE = "metamodelFile";
 
 	private static IDocGenerator getDocGenerator(String format) throws UnsupportedTypeException{
-		if("html".contentEquals(format)){
-			return new EPackageDocGenEclipseHelp();
-		}
-		if("latex".contentEquals(format)){
+		if("html".contentEquals(format)) {
+			return new EPackageDocGenHtml();
+		} else if("latex".contentEquals(format)) {
 			return new EPackageDocGen();
+		} else if ("eclipsehelp".contentEquals(format)) {
+			return new EPackageDocGenEclipseHelp();
 		}
 		throw new UnsupportedTypeException(format);
 	}
