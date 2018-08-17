@@ -19,8 +19,11 @@ import java.io.FileWriter
 import java.io.Reader
 import java.io.StringReader
 import java.util.ArrayList
-import java.util.GregorianCalendar
 import java.util.List
+import javax.xml.parsers.DocumentBuilderFactory
+import javax.xml.transform.TransformerFactory
+import javax.xml.transform.dom.DOMSource
+import javax.xml.transform.stream.StreamResult
 import org.eclipse.emf.ecore.EAttribute
 import org.eclipse.emf.ecore.EClass
 import org.eclipse.emf.ecore.EClassifier
@@ -35,18 +38,36 @@ import org.eclipse.emf.ecore.EStructuralFeature
 import org.eclipse.emf.ecore.ETypedElement
 import org.tautua.markdownpapers.ast.Document
 import org.tautua.markdownpapers.parser.Parser
+import org.w3c.dom.Element
 
 /**
- * @author Abel Hegedus
- * @author Adam Horvath
  * 
+ * @author chreex
  */
 class EPackageDocGenEclipseHelp implements IDocGenerator{
+	private static final val NODE_ID_TOC = "toc";
+	private static final val NODE_ID_TOPIC = "topic";
+	
+	private static final val ATTR_ID_HREF = "href";
+	private static final val ATTR_ID_LABEL = "label";
+	
+	private val documentBuilderFactory = DocumentBuilderFactory.newInstance
+	private val tocBuilder = documentBuilderFactory.newDocumentBuilder;
+	private val toc = tocBuilder.newDocument
+	private val tocRoot = toc.createElement(NODE_ID_TOC)
+	private Element packageTopic;
+	
 	private EPackage pckg
     private StringBuilder builder
     private List<String> filter
 	private File outputDir
 	private File outputFile
+	
+	new() {
+		tocRoot.setAttribute("xmlns:htm", "http://www.w3.org/1999/xhtml");
+		tocRoot.setAttribute("label", "Wings metamodel documentation");
+		toc.appendChild(tocRoot);
+	}
     
     /**
      * Sets the output <em>directory</em>. Output files will be generated into
@@ -75,17 +96,11 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
         this.filter = Lists::newArrayList(nameRefFilter)
         this.outputFile = new File(outputDir, getFileNameForPackage(pckg));
         
-        val gc = new GregorianCalendar()
-        val now = gc.getTime().toString()
-        
 		if (!(outputDir.exists && outputDir.isDirectory) && !outputDir.mkdirs) {
 			throw new RuntimeException("Could not create output directory: "
 				+ outputDir.absolutePath);
-		}
+		}				
         
-        if(genHeader){
-        	
-        }
         pckg.documentEPackageHeader.appendToBuilder
                 		
         pckg.EClassifiers.sortBy[name].forEach[
@@ -256,17 +271,22 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
     	builder.append(s)
     }
     
-    def private documentEPackageHeader(EPackage pckg)
+    def private documentEPackageHeader(EPackage pckg) {
+		val packageName = ePackageFqName(pckg)
+		val title = "The <span class=\"packageName\">" + packageName + "</span> package"
+		packageTopic = toc.createElement(NODE_ID_TOPIC)	
+		packageTopic.setAttribute(ATTR_ID_HREF, getFileNameForPackage(pckg));
+		packageTopic.setAttribute(ATTR_ID_LABEL, ePackageFqName(pckg));
+		tocRoot.appendChild(packageTopic);
     	'''
-    	«val packageName = ePackageFqName(pckg)»
-		«val title = "The <span class=\"packageName\">" + packageName + "</span> package"»
-		«documentHeader("h1", title, packageName, pckg.nsPrefix, pckg)»
-		<div class="">EPackage properties:</div>
-		«documentProperty("Namespace Prefix", '''«escapeText(pckg.nsPrefix)»''')»
-		
-		«documentProperty("Namespace URI", '''«pckg.nsURI»''')»
-		
+			«documentHeader("h1", title, packageName, pckg.nsPrefix, pckg)»
+			<div class="">EPackage properties:</div>
+			«documentProperty("Namespace Prefix", '''«escapeText(pckg.nsPrefix)»''')»
+			
+			«documentProperty("Namespace URI", '''«pckg.nsURI»''')»
+			
         '''
+    }
 
     def private String ePackageFqName(EPackage pckg)
 	{
@@ -329,7 +349,13 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
     
     def private documentEClassHeader(EClass cls){
 	    '''«cls.documentEClassifierHeader»'''.appendToBuilder
-	    var boolean hasPropList = false;
+	    var hasPropList = false;
+	    var subTopic = toc.createElement(NODE_ID_TOPIC)
+	    subTopic.setAttribute(ATTR_ID_LABEL, cls.name)
+	    subTopic.setAttribute(ATTR_ID_HREF, getFileNameForPackage(cls.EPackage)
+	    	+ "#" + escapeLabel(cls.EPackage.nsPrefix + "." + cls.name))
+	    packageTopic.appendChild(subTopic)
+	    
 	    if(cls.isInterface()){
 	      '''<div class="eclassProps">EClass properties:<div class="eclassPropList">
 	      	<span class="label">Interface</span>'''.appendToBuilder
@@ -344,22 +370,7 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
 			}
 			'''<span class="label">Abstract</span>'''.appendToBuilder			
 		}
-//		if(!cls.ESuperTypes.isEmpty()){
-//			var boolean genProps = false;
-//			if(!cls.isInterface() && !cls.isAbstract()){
-//				'''<div class="eclassProps">EClass properties:'''.appendToBuilder
-//				genProps=true;
-//			}
-//			'''
-//			<div class="eclassSupertypes">Supertypes:
-//			«FOR st : cls.ESuperTypes SEPARATOR ", "»
-//			<span class="teletype">«st.preparePossibleReference»</span>
-//	      	«ENDFOR»
-//			</div>'''.appendToBuilder
-//			if(genProps){
-//				'''</div>'''.appendToBuilder
-//			}
-//		}
+
 		if(hasPropList){
 			'''</div></div>'''.appendToBuilder
 		}
@@ -370,8 +381,6 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
     <div id="«parentId+"."+elem.name»" class="teletype">«IF color != null»<div style="color:«color»">«ENDIF»<a href="#«parentId+"."+elem.name»" >«escapeText(elem.name)»</a>«IF color != null»</div>«ENDIF»</div>
     '''
     
-    //(«typePckg.nsURI»)
-    // <«typePckg.name»>
     def private documentETypedElement(ETypedElement elem, String parentId, String color)
     '''
     	<td>«elem.documentENamedElement(parentId, color)»</td>
@@ -548,18 +557,24 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
     }
     
 	def private generatePackageDocTail() {
-		 '''
-	        </body>
-	        </html>
-	        '''.appendToBuilder
+		'''
+	       </body>
+	       </html>
+	    '''.appendToBuilder
 	}
 	
 	override generateTail() {
+		val transformerFactory = TransformerFactory.newInstance
+		val transformer = transformerFactory.newTransformer
+		val domSource = new DOMSource(toc)
+		val streamResult = new StreamResult(new File(outputDir, "toc.xml"));
+		
+		transformer.transform(domSource, streamResult);
 	}
 	
-	 def private backref(EClass cls) {
-	 	EcoreHelper.getBackReferences(cls)
-	 }
+	def private backref(EClass cls) {
+		EcoreHelper.getBackReferences(cls)
+	}
 	
 	override getOutputType() {
 		OutputType.DIRECTORY;

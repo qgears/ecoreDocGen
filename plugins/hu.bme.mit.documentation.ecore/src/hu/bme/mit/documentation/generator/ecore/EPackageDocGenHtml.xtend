@@ -33,6 +33,7 @@ import org.tautua.markdownpapers.ast.Document
 import org.tautua.markdownpapers.parser.Parser
 import hu.qgears.documentation.DocumentationFieldUtils
 import java.io.File
+import org.eclipse.emf.common.util.CommonUtil.StringPool.StringAccessUnit
 
 /**
  * @author Abel Hegedus
