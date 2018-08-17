@@ -13,6 +13,11 @@
             id="hu.bme.mit.documentation.ecore.ui.generatedoc.html"
             name="Generate HTML Documentation">
       </command>
+      <command
+            defaultHandler="hu.bme.mit.documentation.ecore.ui.handlers.GenerateEcoreDocEclipseHelp"
+            id="hu.bme.mit.documentation.ecore.ui.generatedoc.eclipsehelp"
+            name="Generate Eclipse Help Documentation">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
@@ -21,6 +26,16 @@
             locationURI="popup:org.eclipse.ui.popup.any">
          <command
                commandId="hu.bme.mit.documentation.ecore.ui.generatedoc.html"
+               style="push">
+            <visibleWhen
+                  checkEnabled="false">
+               <reference
+                     definitionId="hu.bme.mit.documentation.ecore.ui.ecoredef">
+               </reference>
+            </visibleWhen>
+         </command>
+         <command
+               commandId="hu.bme.mit.documentation.ecore.ui.generatedoc.eclipsehelp"
                style="push">
             <visibleWhen
                   checkEnabled="false">

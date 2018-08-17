@@ -1,5 +1,6 @@
 package hu.bme.mit.documentation.generator.ecore;
 
+import java.io.File;
 import java.util.List;
 
 import org.eclipse.emf.ecore.EPackage;
@@ -11,7 +12,12 @@ import org.eclipse.emf.ecore.EPackage;
  *
  */
 public interface IDocGenerator {
-
+	public static enum OutputType {
+		/** The output is be generated as a single file. */
+		SINGLE_FILE,
+		/** The output is be generated as a directory structure. */
+		DIRECTORY
+	}
 	/**
 	 * Generate all documentation of the supplied {@link EPackage} to the
 	 * supplied {@link StringBuilder}. Hyperlinks will not be generated for
@@ -29,4 +35,16 @@ public interface IDocGenerator {
 	 * Generate tail of the document.
 	 */
 	void generateTail();
+	
+	/**
+	 * Sets the output file or directory.
+	 * @param outputFile the output file or directory
+	 */
+	void setOutputFile(final File outputFile);
+	
+	/**
+	 * 
+	 * @return the type of output this generator produces
+	 */
+	OutputType getOutputType();
 }

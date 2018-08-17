@@ -25,7 +25,7 @@ import org.eclipse.xtext.linking.lazy.LazyLinkingResource;
 import org.eclipse.xtext.util.CancelIndicator;
 
 import hu.bme.mit.documentation.generator.ecore.EPackageDocGen;
-import hu.bme.mit.documentation.generator.ecore.EPackageDocGenHtml;
+import hu.bme.mit.documentation.generator.ecore.EPackageDocGenEclipseHelp;
 import hu.bme.mit.documentation.generator.ecore.IDocGenerator;
 import hu.bme.mit.documentation.generator.ecore.UnsupportedTypeException;
 import hu.bme.mit.documentation.generator.ecore.UtilDocGenerator;
@@ -45,7 +45,7 @@ public class GenerateDocApplication implements IApplication {
 
 	private static IDocGenerator getDocGenerator(String format) throws UnsupportedTypeException{
 		if("html".contentEquals(format)){
-			return new EPackageDocGenHtml();
+			return new EPackageDocGenEclipseHelp();
 		}
 		if("latex".contentEquals(format)){
 			return new EPackageDocGen();

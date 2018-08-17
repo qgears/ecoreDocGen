@@ -54,10 +54,11 @@ public abstract class AbstractGenerateEcoreDoc extends AbstractHandler {
                         String ecoreFileName = file.getName().substring(0,file.getName().indexOf("."));
                         String outputFileName = ecoreFileName+"."+getFileExtension();
                         String filterFileName = ecoreFileName+".docgen";
-                        IFile outFile = null;
-                        IFile filterFile = null;
+                        final IFile outFile;
+                        final IFile filterFile;
                         
                         IContainer parent = file.getParent();
+                        
                         if(parent instanceof IProject){
                             IProject project = (IProject) parent;
                             outFile = project.getFile(outputFileName);
@@ -66,8 +67,15 @@ public abstract class AbstractGenerateEcoreDoc extends AbstractHandler {
                             IFolder folder = (IFolder) parent;
                             outFile = folder.getFile(outputFileName);
                             filterFile = folder.getFile(filterFileName);
+                        } else {
+                        	outFile = null;
+                        	filterFile = null;
                         }
-                        IDocGenerator docGen = getCodeGenerator();
+                        
+                        final IDocGenerator docGen = getCodeGenerator();
+                        
+                        docGen.setOutputFile(outFile.getLocation().toFile());
+                        
                         UtilDocGenerator.generateDocForResourceSet(model, 
                         		new File(outFile.getLocationURI()), 
                         		new File(filterFile.getLocationURI()),
