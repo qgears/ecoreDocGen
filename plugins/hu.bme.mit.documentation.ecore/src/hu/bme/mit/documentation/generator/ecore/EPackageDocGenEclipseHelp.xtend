@@ -106,7 +106,8 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
 		<html>
 		<head>
 			<title>«ePackageFqName(pckg)»</title>
-		</head>
+			<link rel="stylesheet" type="text/css" href="style.css" />
+			</head>
 		<body>
 		'''.appendToBuilder			
         
@@ -117,31 +118,19 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
         	if(it instanceof EClass){
 	        		
         		val cls = it as EClass
+    			val list = new ArrayList;
+    			getAllSuperClassesRecursively(cls, list);
 
         		cls.documentEClassHeader
         		
         		if (!cls.ESuperTypes.empty){
-        			var List<EClass> list = new ArrayList;
-        			getAllSuperClassesRecursively(cls, list);
+    				'''<h6>Supertypes</h6>'''.appendToBuilder    	
         			list.sortBy[name].forEach[
 						val superCls = it as EClass
-	    				val id = escapeLabel(cls.EPackage.nsPrefix+"."+cls.name) + "."  + escapeLabel(superCls.EPackage.nsPrefix+"."+superCls.name);
-	    				'''<h6>'''.appendToBuilder    	
-	    				'''<b>Supertype:</b> <a href="«getFileNameForPackage(superCls.EPackage)»#«escapeLabel(superCls.EPackage.nsPrefix+"."+superCls.name)»">«superCls.name»</a>'''.appendToBuilder    	
-    					''' <a id="«id».toggleButton" href="javascript:toggle('«id»', '«id».toggleButton');">[show]</a>'''.appendToBuilder
-	    				'''<div id="«id»" style="display: none" href="javascript:toggle();">'''.appendToBuilder				
-	    				'''«superCls.findGenModelDocumentation»'''.appendToBuilder
-	    				
-	    				if (!superCls.EAttributes.empty
-	    					|| !superCls.EReferences.empty
-    						|| !superCls.EOperations.empty
-	    				) {
-		    				superCls.documentEClass(id)      		
-	    				}
-	    				
-	    				'''</div>'''.appendToBuilder	
-	    				'''</h6>'''.appendToBuilder	
-					]	        		
+	    				'''<span>'''.appendToBuilder
+        				'''<a href="«getFileNameForPackage(superCls.EPackage)»#«escapeLabel(superCls.EPackage.nsPrefix+"."+superCls.name)»">«superCls.name»</a> | '''.appendToBuilder
+        				'''</span>'''.appendToBuilder    	
+					]
         		}
         		
         		val br = cls.backref
@@ -161,7 +150,21 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
         				'''</span>'''.appendToBuilder
         			]
         		}
-        		cls.documentEClass("" + escapeLabel(cls.EPackage.nsPrefix+"."+cls.name))
+				'''<table>'''.appendToBuilder
+    			list.sortBy[name].forEach[
+					val superCls = it as EClass
+    				val id = escapeLabel(cls.EPackage.nsPrefix+"."+cls.name) + "."  + escapeLabel(superCls.EPackage.nsPrefix+"."+superCls.name);
+    				
+    				if (!superCls.EAttributes.empty
+    					|| !superCls.EReferences.empty
+						|| !superCls.EOperations.empty
+    				) {
+	    				superCls.documentEClass(id, true)      		
+    				}
+    				
+				]        		
+				cls.documentEClass("" + escapeLabel(cls.EPackage.nsPrefix+"."+cls.name), false)
+				'''</table>'''.appendToBuilder
         	} else if(it instanceof EDataType){
         		if(it instanceof EEnum){
         			val eenum = it as EEnum
@@ -178,12 +181,19 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
         pkgDocWriter.close
     }
 	
-	def private documentEClass(EClass cls, String id) {
+	def private documentEClass(EClass cls, String id, boolean isSuperClass) {
 		if(!cls.EAttributes.empty){
 			'''
-			<table>
 			<tr>
-				<th colspan="3"><div class="tableHeader">Attributes</div></th>
+				<th colspan="3"><div class="tableHeader">Attributes
+			'''.appendToBuilder
+			if (isSuperClass) {
+				'''
+				inherited from <a href="«getFileNameForPackage(cls.EPackage)»#«escapeLabel(cls.EPackage.nsPrefix+"."+cls.name)»">«cls.name»</a>    	
+				'''.appendToBuilder
+			}
+			'''
+				</div></th>
 			</tr>
 			<tr>
 				<th><div class="columnHeader">Name</div></th>
@@ -201,7 +211,6 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
 				</tr>'''.appendToBuilder
 			]
 			'''
-			</table>
 			«anchorDef(cls.EPackage.nsPrefix+"."+cls.name+".attr","")»
 			'''.appendToBuilder
 			
@@ -209,11 +218,17 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
 		
 		
 		if(!cls.EReferences.empty){
-			//"paragraph".documentHeader("References", cls.EPackage.nsPrefix+"."+cls.name+".ref", null).appendToBuilder
 			'''
-			<table>
 			<tr>
-				<th colspan="3"><div class="tableHeader">References</div></th>
+				<th colspan="3"><div class="tableHeader">References
+			'''.appendToBuilder
+			if (isSuperClass) {
+				'''
+				inherited from <a href="«getFileNameForPackage(cls.EPackage)»#«escapeLabel(cls.EPackage.nsPrefix+"."+cls.name)»">«cls.name»</a>    	
+				'''.appendToBuilder
+			}
+			'''
+			</div></th>
 			</tr>
 			<tr>
 				<th><div class="columnHeader">Name</div></th>
@@ -232,7 +247,6 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
 				</tr>'''.appendToBuilder
 			]
 			'''
-			</table>
 			«anchorDef(cls.EPackage.nsPrefix+"."+cls.name+".ref","")»
 			'''
 			.appendToBuilder
@@ -241,9 +255,16 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
 		
 		if(!cls.EOperations.empty){
 	    	'''
-			<table>
 			<tr>
-				<th colspan="3"><div class="tableHeader">Operations</div></th>
+				<th colspan="3"><div class="tableHeader">Operations
+			'''.appendToBuilder
+			if (isSuperClass) {
+				'''
+				inherited from <a href="«getFileNameForPackage(cls.EPackage)»#«escapeLabel(cls.EPackage.nsPrefix+"."+cls.name)»">«cls.name»</a>    	
+				'''.appendToBuilder
+			}
+			'''
+			</div></th>
 			</tr>
 			<tr>
 				<th><div class="columnHeader">Name</div></th>
@@ -260,14 +281,12 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
 				</tr>'''.appendToBuilder
 			]
 			'''
-			</table>
 			«anchorDef(cls.EPackage.nsPrefix+"."+cls.name+".op","")»
 			'''.appendToBuilder
-			
 		}
 	}
 	
-	def private getAllSuperClassesRecursively(EClass cls, List<EClass> list) {
+	def private void getAllSuperClassesRecursively(EClass cls, List<EClass> list) {
 		for (EClass superCls : cls.ESuperTypes) {
 			if (!list.contains(superCls)) {
 				list.add(superCls);
