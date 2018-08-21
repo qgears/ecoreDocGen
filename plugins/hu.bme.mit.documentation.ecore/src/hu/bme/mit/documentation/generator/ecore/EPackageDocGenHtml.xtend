@@ -12,6 +12,8 @@
  package hu.bme.mit.documentation.generator.ecore
 
 import com.google.common.collect.Lists
+import hu.qgears.documentation.DocumentationFieldUtils
+import java.io.File
 import java.io.Reader
 import java.io.StringReader
 import java.util.ArrayList
@@ -31,9 +33,6 @@ import org.eclipse.emf.ecore.EStructuralFeature
 import org.eclipse.emf.ecore.ETypedElement
 import org.tautua.markdownpapers.ast.Document
 import org.tautua.markdownpapers.parser.Parser
-import hu.qgears.documentation.DocumentationFieldUtils
-import java.io.File
-import org.eclipse.emf.common.util.CommonUtil.StringPool.StringAccessUnit
 
 /**
  * @author Abel Hegedus
@@ -343,7 +342,7 @@ function getElementsByTagNames(list,obj) {
 		}
 	}
 	
-	def private getAllSuperClassesRecursively(EClass cls, List<EClass> list) {
+	def private void getAllSuperClassesRecursively(EClass cls, List<EClass> list) {
 		for (EClass superCls : cls.ESuperTypes) {
 			if (!list.contains(superCls)) {
 				list.add(superCls);
