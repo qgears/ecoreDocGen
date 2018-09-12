@@ -159,7 +159,7 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
     					|| !superCls.EReferences.empty
 						|| !superCls.EOperations.empty
     				) {
-	    				superCls.documentEClass(id, true)      		
+	    				superCls.documentInheritedRefs(id)      		
     				}
     				
 				]        		
@@ -204,7 +204,7 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
 			cls.EAttributes.sortBy[name].forEach[
 				'''<tr>'''.appendToBuilder
 				documentEAttributeHeader(id).appendToBuilder
-				''' </td> '''.appendToBuilder
+				'''</td>'''.appendToBuilder // Standalone </td> on purpose
 				'''<td>'''.appendToBuilder
 				findGenModelDocumentation(derived).appendToBuilder
 				'''</td>
@@ -241,7 +241,7 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
 				documentEReferenceHeader(id).appendToBuilder
 				'''
 				</td> 
-				<td> '''.appendToBuilder
+				<td> '''.appendToBuilder  // Standalone </td> on purpose
 				findGenModelDocumentation(derived).appendToBuilder
 				'''</td>
 				</tr>'''.appendToBuilder
@@ -279,6 +279,80 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
 				findGenModelDocumentation(false).appendToBuilder
 				'''</td>
 				</tr>'''.appendToBuilder
+			]
+			'''
+			«anchorDef(cls.EPackage.nsPrefix+"."+cls.name+".op","")»
+			'''.appendToBuilder
+		}
+	}
+	
+	def private documentInheritedRefs(EClass cls, String id) {
+		if(!cls.EAttributes.empty){
+			'''
+			<tr>
+				<th colspan="3"><div class="tableHeader">Attributes inherited from 
+				<a href="«getFileNameForPackage(cls.EPackage)»#«escapeLabel(cls.EPackage.nsPrefix+"."+cls.name)»">«cls.name»</a>:
+				</div>
+			'''.appendToBuilder
+			cls.EAttributes.sortBy[name].forEach[
+				documentEAttributeHeader(id).appendToBuilder
+			]				   
+			''' 	
+				</th>
+			</tr>
+			«anchorDef(cls.EPackage.nsPrefix+"."+cls.name+".attr","")»
+			'''.appendToBuilder
+			
+		}
+		
+		
+		if(!cls.EReferences.empty){
+			'''
+			<tr>
+				<th colspan="3"><div class="tableHeader">References
+				inherited from <a href="«getFileNameForPackage(cls.EPackage)»#«escapeLabel(cls.EPackage.nsPrefix+"."+cls.name)»">«cls.name»</a>    	
+			</div></th>
+			</tr>
+			<tr>
+				<th><div class="columnHeader">Name</div></th>
+				<th><div class="columnHeader">Properties</div></th>
+				<th><div class="columnHeader">Documentation</div></th>
+			</tr>
+			'''.appendToBuilder
+			cls.EReferences.sortBy[name].forEach[
+				'''<tr><td>'''.appendToBuilder
+				documentEReferenceHeader(id).appendToBuilder
+				'''</td><td> '''.appendToBuilder
+				findGenModelDocumentation(derived).appendToBuilder
+				'''</td>
+				</tr>'''.appendToBuilder
+			]
+			'''
+			«anchorDef(cls.EPackage.nsPrefix+"."+cls.name+".ref","")»
+			'''
+			.appendToBuilder
+			
+		}
+		
+		if(!cls.EOperations.empty){
+	    	'''
+			<tr>
+				<th colspan="3"><div class="tableHeader">Operations
+				inherited from <a href="«getFileNameForPackage(cls.EPackage)»#«escapeLabel(cls.EPackage.nsPrefix+"."+cls.name)»">«cls.name»</a>    	
+				</div></th>
+			</tr>
+			<tr>
+				<th><div class="columnHeader">Name</div></th>
+				<th><div class="columnHeader">Properties</div></th>
+				<th><div class="columnHeader">Documentation</div></th>
+			</tr>
+			'''.appendToBuilder
+			cls.EOperations.sortBy[name].forEach[
+				'''<tr><td>'''.appendToBuilder
+				documentEOperationHeader(id).appendToBuilder
+				''' </td><td> '''.appendToBuilder
+				findGenModelDocumentation(false).appendToBuilder
+				'''</td></tr>'''.appendToBuilder
 			]
 			'''
 			«anchorDef(cls.EPackage.nsPrefix+"."+cls.name+".op","")»
