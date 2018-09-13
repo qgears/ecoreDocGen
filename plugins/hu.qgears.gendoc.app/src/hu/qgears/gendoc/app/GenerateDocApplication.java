@@ -81,6 +81,9 @@ public class GenerateDocApplication implements IApplication {
 			ResourceSet set = loadMetamodel(new File(metamodelFile));
 			File output = new File(outputFile);
 			IDocGenerator docGen = getDocGenerator(format);
+			
+			docGen.setOutputFile(output);
+			
 			File filter = null;
 			if(filterFile!=null){
 				filter = new File(filterFile);
