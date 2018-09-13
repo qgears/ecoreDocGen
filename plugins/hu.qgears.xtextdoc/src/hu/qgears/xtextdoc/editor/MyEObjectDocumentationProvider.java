@@ -22,7 +22,7 @@ public class MyEObjectDocumentationProvider implements IEObjectDocumentationProv
 		if (o instanceof EObjectWrapper) {
 			EObjectWrapper eObjectWrapper = (EObjectWrapper) o;
 			EObject instance=eObjectWrapper.getObj();
-			String instancedoc=UtilDoc.getCommentDocumentation(instance);
+			String instancedoc= UtilDoc.getLastComment(instance, true);
 			EClass eClass = eObjectWrapper.geteClass();
 			EStructuralFeature eFeature = eObjectWrapper.geteFeature();
 			EClass geteClassFeatureType = eObjectWrapper.geteClassFeatureType();
@@ -38,7 +38,7 @@ public class MyEObjectDocumentationProvider implements IEObjectDocumentationProv
 		} 
 		StringBuilder sb = new StringBuilder();
 		EClass eClass = o.eClass();
-		sb.append(UtilDoc.getCommentDocumentation(o));
+		sb.append(UtilDoc.getLastComment(o, true));
 		UtilDoc.getEMFDocumentation(sb, eClass, null, null);
 		return sb.toString();
 	}

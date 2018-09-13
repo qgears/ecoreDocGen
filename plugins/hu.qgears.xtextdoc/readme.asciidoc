@@ -1,0 +1,65 @@
+= XText grammar documentation generator
+
+== Keywords generator
+
+To start we need the following arguments:
+
+ * Start hu.qgears.xtextdoc.keywords.KeywordsHtml
+ * List of XCore files with documentation annotated metamodel
+ * List of XText files to document
+ * skippedKeys - list of keywords that are not documented ('a'-'z', symbols, etc)
+ * exampleFolders - Files in this folder are recursively searched for examples
+ * exampleExtensions - Files with these endings are loaded as examples
+
+=== Example annotations
+
+Annotations are written into comments with the following syntax:
+
+----
+/*
+ * @example keyword
+ */
+keyword .... {
+	etwas {
+	}
+}
+----
+
+If keyword consists of more words, the syntax is the following:
+
+----
+/*
+ * @example kw1_kw2
+ */
+kw1 kw2 .... {
+	etwas {
+	}
+}
+----
+
+Where keyword is the keyword which this example documents. The string from the previous '/*' until the closing '}' is extracted as an example. '{' and '}' are counted in pairs.
+
+In case the example does not contain a {} pair then the following can be used to limit the example:
+
+/* @example { */
+example without blocks
+/* } */
+
+The annotation can specify which usage of the keyword is documented (in case the keyword has multiple usages):\
+
+ @example keyword EmfTypeClass
+
+Documentation of the keyword that creates the named type.
+
+ @example keyword [EmfTypeClass]
+
+ Documentation of the keyword that refers to the named type.
+ 
+ @example keyword (EmfTypeClass)
+
+Documentation of the keyword that refers to the named enumeration type.
+
+ @example keyword true
+
+Documentation of the keyword that sets a feature to true.
+

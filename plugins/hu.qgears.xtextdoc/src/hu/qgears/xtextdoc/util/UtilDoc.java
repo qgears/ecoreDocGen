@@ -1,5 +1,8 @@
 package hu.qgears.xtextdoc.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
@@ -34,12 +37,12 @@ public class UtilDoc {
 	 * @param o
 	 * @return
 	 */
-	private static String findComment(EObject o) {
-		String returnValue = null;
+	private static List<String> findComments(EObject o) {
+		List<String> returnList = new ArrayList<>();
 		ICompositeNode node = NodeModelUtils.getNode(o);
 		if (node != null) {
 			INode parent = node.getParent();
-			ILeafNode last = null;
+			List<ILeafNode> comments = new ArrayList<>();
 			for (ILeafNode leaf : parent.getLeafNodes()) {
 				int totalOffset = leaf.getTotalOffset();
 				int nodeTotalOffset = node.getTotalEndOffset() - node.getLength();
@@ -47,122 +50,68 @@ public class UtilDoc {
 					break;
 				}
 				if (leaf.getGrammarElement() instanceof TerminalRule) {
-					if(leaf.getSemanticElement()==o)
-					{
+					EObject semElement = leaf.getSemanticElement();
+					if(semElement==o || (semElement.eContainer()!=null && semElement.eContainer()==o)) {
 						TerminalRule terminalRule = (TerminalRule) leaf.getGrammarElement();
 						String ruleN = terminalRule.getName();
 						if (leaf.isHidden() && ruleN.equalsIgnoreCase(ruleName)) {
-							last = leaf;
+							comments.add(leaf);
 						}
 					}
 				}
 			}
-			if (last != null) {
-				String comment = last.getText();
+			for (ILeafNode aComment : comments) {
+				String comment = aComment.getText();
 				if (comment.matches("(?s)" + startTag + ".*")) {
-					returnValue=unescapeComment(comment);
+					returnList.add(comment);
 				}
 			}
 		}
-		return returnValue;
+		return returnList;
 	}
 	/**
-	 * Unescape a comment block by removing * characters from the beginning of the lines and trimming all lines.
-	 * Trailing \n is also removed.
-	 * @param comment
-	 * @return
-	 */
-	private static String unescapeComment(String comment) {
-		StringBuilder ret=new StringBuilder();
-		String r=comment;
-		int charAt=0;
-		if(r.startsWith("/**"))
-		{
-			charAt+=3;
-		}
-		else if(r.startsWith("/*"))
-		{
-			charAt+=2;
-		}
-		int nline=0;
-		while(charAt<r.length())
-		{
-			while(charAt<r.length() && Character.isWhitespace(r.charAt(charAt)))
-			{
-				charAt++;
-			}
-			if(r.startsWith("* ", charAt))
-			{
-				charAt+=2;
-			}else if(r.startsWith("*"))
-			{
-				charAt+=1;
-			}
-			int nextNewLine=r.indexOf("\r\n", charAt);
-			int nextNewLine2=r.indexOf("\n",charAt);
-			int endline;
-			int separatorlength;
-			boolean lastLine=false;
-			if(nextNewLine>=0 && nextNewLine<nextNewLine2)
-			{
-				endline=nextNewLine;
-				separatorlength=2;
-			}else if(nextNewLine2>=0)
-			{
-				endline=nextNewLine2;
-				separatorlength=1;
-			}else
-			{
-				endline=r.length();
-				separatorlength=0;
-				lastLine=true;
-				if(r.startsWith("*/", endline-2))
-				{
-					separatorlength=2;
-					endline-=2;
-				}
-			}
-			String line=r.substring(charAt, endline);
-			String trimmed=line.trim();
-			if(nline>0&&(trimmed.length()>0||!lastLine))
-			{
-				ret.append('\n');
-			}
-			ret.append(trimmed);
-			charAt=endline+separatorlength;
-			nline++;
-		}
-		return ret.toString();
-	}
-
-	/**
-	 * Reads the comment documentation for the EObject. Never returns
-	 * <code>null</code>, but returns the String "No documentation" if no
+	 * Reads the comment documentations for the EObject. Never returns
+	 * <code>empty list</code>, but returns the String "No documentation" if no
 	 * comment is assigned to given object.
 	 * 
 	 * @param o
 	 * @return
 	 * @see #getComment(EObject)
 	 */
-	public static String getCommentDocumentation(EObject o) {
-		String doc = findComment(o);
-		if (doc == null) {
-			doc = "No documentation";
+	public static List<String> getCommentDocumentations(EObject o) {
+		List<String> doc = findComments(o);
+		if (doc == null || doc.isEmpty()) {
+			doc.add("No documentation");
 		}
 		return doc;
 	}
 
 	/**
-	 * Reads the comment documentation for the EObject. Returns
+	 * Reads the comment documentations for the EObject. Returns
+	 * <code>empty list</code> if no comment is assigned to given object.
+	 * 
+	 * @param o
+	 * @return
+	 */
+	public static List<String> getComments(EObject o) {
+		return findComments(o);
+	}
+
+	/**
+	 * Reads the last comment documentation for the EObject. Returns
 	 * <code>null</code> if no comment is assigned to given object.
 	 * 
 	 * @param o
 	 * @return
 	 */
-	public static String getComment(EObject o) {
-		return findComment(o);
+	public static String getLastComment(EObject o, boolean forDoc) {
+		List<String> comments = forDoc ? getCommentDocumentations(o) : findComments(o);
+		if (comments.isEmpty()) {
+			return null;
+		}
+		return comments.get(comments.size() -1);
 	}
-
+	
 	public static void getEMFDocumentation(StringBuilder sb, EClass eClass, EStructuralFeature eFeature,
 			EClass eClassFeatureType) {
 		if (eClass != null) {
