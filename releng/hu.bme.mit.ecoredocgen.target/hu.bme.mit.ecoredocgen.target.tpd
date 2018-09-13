@@ -17,8 +17,3 @@ location "http://download.eclipse.org/releases/luna/" eclipse-luna {
 	org.eclipse.emf.common.feature.group
 	org.eclipse.emf.sdk.feature.group 
 }
-location "https://buildserver.qgears.net/update-sites/qgears-opensource-repo-public/" qgears-opensource-repo {
-	//Opensource utils features and plugins
-	hu.qgears.commons  [6.12.0.201804211317,6.12.0.201804211317]
-}
-
