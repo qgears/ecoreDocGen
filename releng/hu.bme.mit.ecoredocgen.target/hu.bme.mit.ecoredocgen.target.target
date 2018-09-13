@@ -21,5 +21,9 @@
       <unit id="org.eclipse.emf.sdk.feature.group" version="2.10.2.v20150123-0452"/>
       <repository id="eclipse-luna" location="http://download.eclipse.org/releases/luna/"/>
     </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="hu.qgears.commons" version="6.12.0.201804211317"/>
+      <repository id="qgears-opensource-repo" location="https://buildserver.qgears.net/update-sites/qgears-opensource-repo-public/"/>
+    </location>
   </locations>
 </target>
