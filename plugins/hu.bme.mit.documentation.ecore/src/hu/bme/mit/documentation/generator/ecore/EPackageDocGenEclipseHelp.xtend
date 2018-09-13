@@ -102,7 +102,8 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
 		}
 		
 		'''
-		<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+		««« <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+		<!DOCTYPE html>
 		<html>
 		<head>
 			<title>«ePackageFqName(pckg)»</title>
@@ -113,19 +114,20 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
         
         pckg.documentEPackageHeader.appendToBuilder
                 		
-        pckg.EClassifiers.sortBy[name].forEach[
+        pckg.EClassifiers.sortBy[name].filter(EClass).forEach[ classifier |
 
-        	if(it instanceof EClass){
+        	if(classifier instanceof EClass){
 	        		
-        		val cls = it as EClass
-    			val list = new ArrayList;
-    			getAllSuperClassesRecursively(cls, list);
+        		val cls = classifier as EClass
+    			val allSuperClasses =  cls.EAllSuperTypes //new ArrayList;
+    			//getAllSuperClassesRecursively(cls, allSuperClasses);
+    			// getEAllSuperTypes?
 
         		cls.documentEClassHeader
         		
         		if (!cls.ESuperTypes.empty){
     				'''<h6>Supertypes</h6>'''.appendToBuilder    	
-        			list.sortBy[name].forEach[
+        			allSuperClasses.sortBy[name].forEach[
 						val superCls = it as EClass
 	    				'''<span>'''.appendToBuilder
         				'''<a href="«getFileNameForPackage(superCls.EPackage)»#«escapeLabel(superCls.EPackage.nsPrefix+"."+superCls.name)»">«superCls.name»</a> | '''.appendToBuilder
@@ -150,8 +152,21 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
         				'''</span>'''.appendToBuilder
         			]
         		}
+        		
+        		'''
+    				«FOR superCls : allSuperClasses.sortBy[name]»
+	    				«val id = escapeLabel(cls.EPackage.nsPrefix+"."+cls.name) + "."  + escapeLabel(superCls.EPackage.nsPrefix+"."+superCls.name)»
+	    				
+	    				«IF !superCls.EAttributes.empty
+	    					|| !superCls.EReferences.empty
+							|| !superCls.EOperations.empty» 
+							«superCls.documentInheritedRefs(id)»
+						«ENDIF»
+    				«ENDFOR»
+        		'''.appendToBuilder
+        		/*
 				'''<table>'''.appendToBuilder
-    			list.sortBy[name].forEach[
+    			allSuperClasses.sortBy[name].forEach[
 					val superCls = it as EClass
     				val id = escapeLabel(cls.EPackage.nsPrefix+"."+cls.name) + "."  + escapeLabel(superCls.EPackage.nsPrefix+"."+superCls.name);
     				
@@ -159,15 +174,16 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
     					|| !superCls.EReferences.empty
 						|| !superCls.EOperations.empty
     				) {
-	    				superCls.documentInheritedRefs(id)      		
+	    				superCls.documentInheritedRefs(id).appendToBuilder   		
     				}
     				
 				]        		
 				cls.documentEClass("" + escapeLabel(cls.EPackage.nsPrefix+"."+cls.name), false)
 				'''</table>'''.appendToBuilder
-        	} else if(it instanceof EDataType){
-        		if(it instanceof EEnum){
-        			val eenum = it as EEnum
+				*/
+        	} else if(classifier instanceof EDataType){
+        		if(classifier instanceof EEnum){
+        			val eenum = classifier as EEnum
         			eenum.documentEEnumHeader.appendToBuilder
         		}
         	}
@@ -186,13 +202,9 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
 			'''
 			<tr>
 				<th colspan="3"><div class="tableHeader">Attributes
-			'''.appendToBuilder
-			if (isSuperClass) {
-				'''
-				inherited from <a href="«getFileNameForPackage(cls.EPackage)»#«escapeLabel(cls.EPackage.nsPrefix+"."+cls.name)»">«cls.name»</a>    	
-				'''.appendToBuilder
-			}
-			'''
+				«IF isSuperClass »
+					inherited from <a href="«getFileNameForPackage(cls.EPackage)»#«escapeLabel(cls.EPackage.nsPrefix+"."+cls.name)»">«cls.name»</a>    	
+				«ENDIF»
 				</div></th>
 			</tr>
 			<tr>
@@ -200,7 +212,19 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
 				<th><div class="columnHeader">Properties</div></th>
 				<th><div class="columnHeader">Documentation</div></th>
 			</tr>
+			
+			«FOR attrib: cls.EAttributes.sortBy[name]»
+				<tr>
+					«documentEAttributeHeader(attrib, id)»
+					</td>
+					<td>
+						«findGenModelDocumentation(attrib, attrib.derived)»
+					</td>
+				</tr>
+			«ENDFOR»
+			
 			'''.appendToBuilder
+			/* 
 			cls.EAttributes.sortBy[name].forEach[
 				'''<tr>'''.appendToBuilder
 				documentEAttributeHeader(id).appendToBuilder
@@ -210,7 +234,8 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
 				'''</td>
 				</tr>'''.appendToBuilder
 			]
-			'''
+			*/
+			'''			
 			«anchorDef(cls.EPackage.nsPrefix+"."+cls.name+".attr","")»
 			'''.appendToBuilder
 			
@@ -287,87 +312,90 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
 	}
 	
 	def private documentInheritedRefs(EClass cls, String id) {
-		if(!cls.EAttributes.empty){
-			'''
-			<tr>
-				<th colspan="3"><div class="tableHeader">Attributes inherited from 
-				<a href="«getFileNameForPackage(cls.EPackage)»#«escapeLabel(cls.EPackage.nsPrefix+"."+cls.name)»">«cls.name»</a>:
-				</div>
-			'''.appendToBuilder
-			cls.EAttributes.sortBy[name].forEach[
-				documentEAttributeHeader(id).appendToBuilder
-			]				   
-			''' 	
-				</th>
-			</tr>
+
+		'''
+		«IF !cls.EAttributes.empty»
+			<table>
+				<tr>
+					<th colspan="3"><div class="tableHeader">Attributes inherited from 
+					<a href="«getFileNameForPackage(cls.EPackage)»#«escapeLabel(cls.EPackage.nsPrefix+"."+cls.name)»">«cls.name»</a>:
+					</div>
+					</th>
+				</tr>
+				«FOR attrib: cls.EAttributes.sortBy[name]»
+					<tr>
+						«attrib.documentEAttributeHeader(id)»
+						</td>				
+						<td>
+							«findGenModelDocumentation(attrib,attrib.derived)»
+						</td>
+					</tr>
+				«ENDFOR»
+			</table>
 			«anchorDef(cls.EPackage.nsPrefix+"."+cls.name+".attr","")»
-			'''.appendToBuilder
-			
-		}
+		«ENDIF»
 		
-		
-		if(!cls.EReferences.empty){
-			'''
-			<tr>
-				<th colspan="3"><div class="tableHeader">References
-				inherited from <a href="«getFileNameForPackage(cls.EPackage)»#«escapeLabel(cls.EPackage.nsPrefix+"."+cls.name)»">«cls.name»</a>    	
-			</div></th>
-			</tr>
-			<tr>
-				<th><div class="columnHeader">Name</div></th>
-				<th><div class="columnHeader">Properties</div></th>
-				<th><div class="columnHeader">Documentation</div></th>
-			</tr>
-			'''.appendToBuilder
-			cls.EReferences.sortBy[name].forEach[
-				'''<tr><td>'''.appendToBuilder
-				documentEReferenceHeader(id).appendToBuilder
-				'''</td><td> '''.appendToBuilder
-				findGenModelDocumentation(derived).appendToBuilder
-				'''</td>
-				</tr>'''.appendToBuilder
-			]
-			'''
+		«IF !cls.EReferences.empty»
+			<table>
+				<tr>
+					<th colspan="3"><div class="tableHeader">References
+					inherited from <a href="«getFileNameForPackage(cls.EPackage)»#«escapeLabel(cls.EPackage.nsPrefix+"."+cls.name)»">«cls.name»</a>    	
+					</div></th>
+				</tr>
+				<tr>
+					<th><div class="columnHeader">Name</div></th>
+					<th><div class="columnHeader">Properties</div></th>
+					<th><div class="columnHeader">Documentation</div></th>
+				</tr>
+				«FOR ref : cls.EReferences.sortBy[name] »
+					<tr>
+						«ref.documentEReferenceHeader(id)»
+						</td>
+						<td>
+							«findGenModelDocumentation(ref,ref.derived)»
+						</td>
+					</tr>
+				«ENDFOR»
+			</table>
 			«anchorDef(cls.EPackage.nsPrefix+"."+cls.name+".ref","")»
-			'''
-			.appendToBuilder
-			
-		}
+		«ENDIF»
 		
-		if(!cls.EOperations.empty){
-	    	'''
-			<tr>
-				<th colspan="3"><div class="tableHeader">Operations
-				inherited from <a href="«getFileNameForPackage(cls.EPackage)»#«escapeLabel(cls.EPackage.nsPrefix+"."+cls.name)»">«cls.name»</a>    	
-				</div></th>
-			</tr>
-			<tr>
-				<th><div class="columnHeader">Name</div></th>
-				<th><div class="columnHeader">Properties</div></th>
-				<th><div class="columnHeader">Documentation</div></th>
-			</tr>
-			'''.appendToBuilder
-			cls.EOperations.sortBy[name].forEach[
-				'''<tr><td>'''.appendToBuilder
-				documentEOperationHeader(id).appendToBuilder
-				''' </td><td> '''.appendToBuilder
-				findGenModelDocumentation(false).appendToBuilder
-				'''</td></tr>'''.appendToBuilder
-			]
-			'''
-			«anchorDef(cls.EPackage.nsPrefix+"."+cls.name+".op","")»
-			'''.appendToBuilder
-		}
+		«IF !cls.EOperations.empty»
+			<table>
+				<tr>
+					<th colspan="3"><div class="tableHeader">Operations
+					inherited from <a href="«getFileNameForPackage(cls.EPackage)»#«escapeLabel(cls.EPackage.nsPrefix+"."+cls.name)»">«cls.name»</a>    	
+					</div></th>
+				</tr>
+				<tr>
+					<th><div class="columnHeader">Name</div></th>
+					<th><div class="columnHeader">Properties</div></th>
+					<th><div class="columnHeader">Documentation</div></th>
+				</tr>
+				«FOR operation : cls.EOperations.sortBy[name]»
+					<tr>
+						«documentEOperationHeader(operation, id)»
+						</td>
+						<td>
+							«findGenModelDocumentation(operation, false)»
+						</td>
+					</tr>
+				«ENDFOR»
+				«anchorDef(cls.EPackage.nsPrefix+"."+cls.name+".op","")»
+			</table>
+		«ENDIF»
+		'''
 	}
 	
-	def private void getAllSuperClassesRecursively(EClass cls, List<EClass> list) {
+	/* 
+	 * def private void getAllSuperClassesRecursively(EClass cls, List<EClass> list) {
 		for (EClass superCls : cls.ESuperTypes) {
 			if (!list.contains(superCls)) {
 				list.add(superCls);
 			}
 			getAllSuperClassesRecursively(superCls, list);
 		}
-	}
+	}*/
     
     def private appendToBuilder(CharSequence s){
     	builder.append(s)
@@ -424,27 +452,27 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
     '''
 	«eenum.documentEDataTypeHeader»
 	<table>
-	<tr>
-		<th colspan="3"><div class="tableHeader">Literals</div></th>
-	</tr>
-	<tr>
-		<th><div class="columnHeader">Name</div></th>
-		<th><div class="columnHeader">Value</div></th>
-		<th><div class="columnHeader">Documentation</div></th>
-	</tr>
-	«FOR literal : eenum.ELiterals»
-	<tr>
-		<td>
-			<span class="teletype">«escapeText(literal.literal)»</span>
-		</td>
-		<td>
-			«literal.value»
-		</td>
-		<td>
-			«literal.findGenModelDocumentation(false)»
-		</td>	
-	</tr>
-    «ENDFOR»
+		<tr>
+			<th colspan="3"><div class="tableHeader">Literals</div></th>
+		</tr>
+		<tr>
+			<th><div class="columnHeader">Name</div></th>
+			<th><div class="columnHeader">Value</div></th>
+			<th><div class="columnHeader">Documentation</div></th>
+		</tr>
+		«FOR literal : eenum.ELiterals»
+			<tr>
+				<td>
+					<span class="teletype">«escapeText(literal.literal)»</span>
+				</td>
+				<td>
+					«literal.value»
+				</td>
+				<td>
+					«literal.findGenModelDocumentation(false)»
+				</td>	
+			</tr>
+	    «ENDFOR»
 	</table>
 	«anchorDef(eenum.EPackage.nsPrefix+"."+eenum.name+".lit","")»
     '''
@@ -485,15 +513,21 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
     
     def private documentETypedElement(ETypedElement elem, String parentId, String color)
     '''
-    	<td>«elem.documentENamedElement(parentId, color)»</td>
-    	<td>«documentProperty("T", elem.preparePossibleReference)»
-    <div class="label">Cardinality: [«elem.lowerBound»..«IF elem.upperBound == -1»*«ELSE»«elem.upperBound»«ENDIF»]</div>
-    «IF !elem.ordered»
-    <div class="label">Unordered</div>
-    «ENDIF»
-    «IF !elem.unique»
-    <div class="label">Not unique</div>
-    «ENDIF»'''
+		<td>
+			«elem.documentENamedElement(parentId, color)»
+		</td>
+		<td>
+			«documentProperty("T", elem.preparePossibleReference)»
+			<div class="label">Cardinality: [«elem.lowerBound»..«IF elem.upperBound == -1»*«ELSE»«elem.upperBound»«ENDIF»]</div>
+			«IF !elem.ordered»
+				<div class="label">Unordered</div>
+			«ENDIF»
+			«IF !elem.unique»
+				<div class="label">Not unique</div>
+			«ENDIF»
+		
+    '''
+    
     
     def private preparePossibleReference(ETypedElement elem){
     	if(elem.EGenericType != null){
@@ -519,84 +553,84 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
     
     def private documentEStructuralFeatureHeader(EStructuralFeature feat, String parentId)
     '''
-    «IF feat.derived»
-	    «feat.documentETypedElement(parentId, "blue")»
-	     <div class="label">Derived</div>
-    «ELSE»
-    	«feat.documentETypedElement(parentId, null)»
-    «ENDIF»
-    «IF !feat.changeable»
-    <div class="label">Non-changeable</div>
-    «ENDIF»
-    «IF feat.volatile»
-    <div class="label">Volatile</div>
-    «ENDIF»
-    «IF feat.transient»
-    <div class="label">Transient</div>
-    «ENDIF»
-    «IF feat.unsettable»
-    <div class="label">Unsettable</div>
-    «ENDIF»
-    «IF feat.defaultValueLiteral != null»
-    «documentProperty("Default", escapeText(feat.defaultValueLiteral))»
-    «ENDIF»
-    «IF feat.derived»
-    <div class="label">Derived</div>
-    «ENDIF»
+	    «IF feat.derived»
+		    «feat.documentETypedElement(parentId, "blue")»
+		     <div class="label">Derived</div>
+	    «ELSE»
+	    	«feat.documentETypedElement(parentId, null)»
+	    «ENDIF»
+	    «IF !feat.changeable»
+	    <div class="label">Non-changeable</div>
+	    «ENDIF»
+	    «IF feat.volatile»
+	    <div class="label">Volatile</div>
+	    «ENDIF»
+	    «IF feat.transient»
+	    <div class="label">Transient</div>
+	    «ENDIF»
+	    «IF feat.unsettable»
+	    <div class="label">Unsettable</div>
+	    «ENDIF»
+	    «IF feat.defaultValueLiteral != null»
+	    «documentProperty("Default", escapeText(feat.defaultValueLiteral))»
+	    «ENDIF»
+	    «IF feat.derived»
+	    <div class="label">Derived</div>
+	    «ENDIF»
     '''
     
     def private documentEAttributeHeader(EAttribute attr, String parentId)
     '''
-    «attr.documentEStructuralFeatureHeader(parentId)»
-    «IF attr.ID»
-    <div class="label">Identifier</div>
-    «ENDIF»
+	    «attr.documentEStructuralFeatureHeader(parentId)»
+	    «IF attr.ID»
+	    <div class="label">Identifier</div>
+	    «ENDIF»
     '''
     
     def private documentEReferenceHeader(EReference ref, String parentId)
     '''
-    «ref.documentEStructuralFeatureHeader(parentId)»
-    «IF ref.containment»
-    <div class="label">Containment</div>
-    «ENDIF»
-    «IF ref.container»
-    <div class="label">Container</div>
-    «ENDIF»
-    «IF ref.EOpposite != null»
-    «documentProperty("Op", ref.EOpposite.name)»
-    «ENDIF»
+	    «ref.documentEStructuralFeatureHeader(parentId)»
+	    «IF ref.containment»
+	    <div class="label">Containment</div>
+	    «ENDIF»
+	    «IF ref.container»
+	    <div class="label">Container</div>
+	    «ENDIF»
+	    «IF ref.EOpposite != null»
+	    «documentProperty("Op", ref.EOpposite.name)»
+	    «ENDIF»
     '''
     //ref.EOpposite.EContainingClass.preparePossibleReference+".\\allowbreak "+
     
     def private documentEOperationHeader(EOperation op, String parentId)
     '''
-    «op.documentETypedElement(parentId, null)»
-    «IF op.EType != null»
-    <div class="label">Returns:</div>
-    «op.preparePossibleReference»[«op.lowerBound»..«IF op.upperBound == ETypedElement::UNBOUNDED_MULTIPLICITY»*«ELSE»«op.upperBound»«ENDIF»]
-    «ENDIF»
-    «IF !op.EParameters.empty»
-    <div class="label">Parameters:
-    <ul>
-    «FOR param : op.EParameters»
-    	<li>«param.preparePossibleReference»[«param.lowerBound»..«IF param.upperBound == ETypedElement::UNBOUNDED_MULTIPLICITY»*«ELSE»«param.upperBound»«ENDIF»] <span class="teletype>"«escapeText(param.name)»</span></li>
-    «ENDFOR»
-    </ul>
-    «ENDIF»
+	    «op.documentETypedElement(parentId, null)»
+	    «IF op.EType != null»
+	    <div class="label">Returns:</div>
+	    «op.preparePossibleReference»[«op.lowerBound»..«IF op.upperBound == ETypedElement::UNBOUNDED_MULTIPLICITY»*«ELSE»«op.upperBound»«ENDIF»]
+	    «ENDIF»
+	    «IF !op.EParameters.empty»
+	    <div class="label">Parameters:
+	    <ul>
+	    «FOR param : op.EParameters»
+	    	<li>«param.preparePossibleReference»[«param.lowerBound»..«IF param.upperBound == ETypedElement::UNBOUNDED_MULTIPLICITY»*«ELSE»«param.upperBound»«ENDIF»] <span class="teletype>"«escapeText(param.name)»</span></li>
+	    «ENDFOR»
+	    </ul>
+	    «ENDIF»
     '''
     
     def private documentProperty(CharSequence key, CharSequence value)
+	'''
+	    <div class="keyValue"><span class="label">«key»: </span><span class="teletype">«value»</span></div>
     '''
-    <div class="keyValue"><span class="label">«key»: </span><span class="teletype">«value»</span></div>
-    '''
-    
+
     def private documentHeader(String sectionClass, String sectionTitle, String shortTitle, String label, EModelElement element)
     '''
-    <«sectionClass» id="«escapeLabel(label)»">«anchorDef(escapeLabel(label),sectionTitle)»</«sectionClass»>
-    
-    «IF element != null»
-    «element.findGenModelDocumentation»
-    «ENDIF»
+	    <«sectionClass» id="«escapeLabel(label)»">«anchorDef(escapeLabel(label),sectionTitle)»</«sectionClass»>
+	    
+	    «IF element != null»
+	    «element.findGenModelDocumentation»
+	    «ENDIF»
     '''
     
     def private escapeText(String text){
