@@ -144,12 +144,24 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
         			]
         		}
         		if (!br.usedByReferences.empty) {
-        			'''<h6>Used by</h6>'''.appendToBuilder
+        			'''
+        				<h6>Used by</h6>
+        				«FOR useRef: br.usedByReferences.sortBy[EContainingClass.name + name]»
+        					<span>
+        					<a href="«getFileNameForPackage(useRef.EContainingClass.EPackage)»#«
+        					»«escapeLabel(useRef.EContainingClass.EPackage.nsPrefix+useRef.EContainingClass.name)+"."+useRef.name»">«
+        					»«useRef.EContainingClass.name +"::"+  useRef.name»</a> |
+        					</span>
+        				«ENDFOR»
+        			'''.appendToBuilder
+        			
+        			
+        			/*'''<h6>Used by</h6>'''.appendToBuilder
         			br.usedByReferences.sortBy[EContainingClass.name + name].forEach[
         				'''<span>'''.appendToBuilder
         				'''<a href="«getFileNameForPackage(it.EContainingClass.EPackage)»#«escapeLabel(it.EContainingClass.EPackage.nsPrefix+it.EContainingClass.name)+"."+it.name»">«it.EContainingClass.name +"::"+  it.name»</a> | '''.appendToBuilder    	
         				'''</span>'''.appendToBuilder
-        			]
+        			]*/
         		}
         		
         		'''
@@ -164,6 +176,7 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
     				«ENDFOR»
     				«cls.documentEClass("" + escapeLabel(cls.EPackage.nsPrefix+"."+cls.name), false)»
         		'''.appendToBuilder
+        		
         		/*
 				'''<table>'''.appendToBuilder
     			allSuperClasses.sortBy[name].forEach[
@@ -198,117 +211,91 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
     }
 	
 	def private documentEClass(EClass cls, String id, boolean isSuperClass) {
-		if(!cls.EAttributes.empty){
-			'''
-			<tr>
-				<th colspan="3"><div class="tableHeader">Attributes
-				«IF isSuperClass »
-					inherited from <a href="«getFileNameForPackage(cls.EPackage)»#«escapeLabel(cls.EPackage.nsPrefix+"."+cls.name)»">«cls.name»</a>    	
-				«ENDIF»
-				</div></th>
-			</tr>
-			<tr>
-				<th><div class="columnHeader">Name</div></th>
-				<th><div class="columnHeader">Properties</div></th>
-				<th><div class="columnHeader">Documentation</div></th>
-			</tr>
-			
-			«FOR attrib: cls.EAttributes.sortBy[name]»
-				<tr>
-					«documentEAttributeHeader(attrib, id)»
-					</td>
-					<td>
-						«findGenModelDocumentation(attrib, attrib.derived)»
-					</td>
-				</tr>
-			«ENDFOR»
-			
-			'''.appendToBuilder
-			/* 
-			cls.EAttributes.sortBy[name].forEach[
-				'''<tr>'''.appendToBuilder
-				documentEAttributeHeader(id).appendToBuilder
-				'''</td>'''.appendToBuilder // Standalone </td> on purpose
-				'''<td>'''.appendToBuilder
-				findGenModelDocumentation(derived).appendToBuilder
-				'''</td>
-				</tr>'''.appendToBuilder
-			]
-			*/
-			'''			
+		'''
+			«IF !cls.EAttributes.empty»
+				<table>
+					<tr>
+						<th colspan="3"><div class="tableHeader">Attributes
+						«IF isSuperClass »
+							inherited from <a href="«getFileNameForPackage(cls.EPackage)»#«escapeLabel(cls.EPackage.nsPrefix+"."+cls.name)»">«cls.name»</a>    	
+						«ENDIF»
+						</div></th>
+					</tr>
+					<tr>
+						<th><div class="columnHeader">Name</div></th>
+						<th><div class="columnHeader">Properties</div></th>
+						<th><div class="columnHeader">Documentation</div></th>
+					</tr>
+					
+					«FOR attrib: cls.EAttributes.sortBy[name]»
+						<tr>
+							«documentEAttributeHeader(attrib, id)»
+							</td>
+							<td>
+								«findGenModelDocumentation(attrib, attrib.derived)»
+							</td>
+						</tr>
+					«ENDFOR»
+				</table>
+			«ENDIF»
 			«anchorDef(cls.EPackage.nsPrefix+"."+cls.name+".attr","")»
-			'''.appendToBuilder
 			
-		}
-		
-		
-		if(!cls.EReferences.empty){
-			'''
-			<tr>
-				<th colspan="3"><div class="tableHeader">References
-			'''.appendToBuilder
-			if (isSuperClass) {
-				'''
-				inherited from <a href="«getFileNameForPackage(cls.EPackage)»#«escapeLabel(cls.EPackage.nsPrefix+"."+cls.name)»">«cls.name»</a>    	
-				'''.appendToBuilder
-			}
-			'''
-			</div></th>
-			</tr>
-			<tr>
-				<th><div class="columnHeader">Name</div></th>
-				<th><div class="columnHeader">Properties</div></th>
-				<th><div class="columnHeader">Documentation</div></th>
-			</tr>
-			'''.appendToBuilder
-			cls.EReferences.sortBy[name].forEach[
-				'''<tr>'''.appendToBuilder
-				documentEReferenceHeader(id).appendToBuilder
-				'''
-				</td> 
-				<td> '''.appendToBuilder  // Standalone </td> on purpose
-				findGenModelDocumentation(derived).appendToBuilder
-				'''</td>
-				</tr>'''.appendToBuilder
-			]
-			'''
-			«anchorDef(cls.EPackage.nsPrefix+"."+cls.name+".ref","")»
-			'''
-			.appendToBuilder
+			«IF !cls.EReferences.empty»
+				<table>
+					<tr>
+						<th colspan="3"><div class="tableHeader">References
+						«IF isSuperClass»
+							inherited from <a href="«getFileNameForPackage(cls.EPackage)»#«escapeLabel(cls.EPackage.nsPrefix+"."+cls.name)»">«cls.name»</a>
+						«ENDIF»
+						</div></th>
+					</tr>
+					<tr>
+						<th><div class="columnHeader">Name</div></th>
+						<th><div class="columnHeader">Properties</div></th>
+						<th><div class="columnHeader">Documentation</div></th>
+					</tr>
+					
+					«FOR ref: cls.EReferences.sortBy[name]»
+						<tr>
+							«documentEReferenceHeader(ref, id)»
+							</td>
+							<td>
+								«findGenModelDocumentation(ref, ref.derived)»
+						</tr>
+					«ENDFOR»
+				</table>
+				«anchorDef(cls.EPackage.nsPrefix+"."+cls.name+".ref","")»
+			«ENDIF»
 			
-		}
-		
-		if(!cls.EOperations.empty){
-	    	'''
-			<tr>
-				<th colspan="3"><div class="tableHeader">Operations
-			'''.appendToBuilder
-			if (isSuperClass) {
-				'''
-				inherited from <a href="«getFileNameForPackage(cls.EPackage)»#«escapeLabel(cls.EPackage.nsPrefix+"."+cls.name)»">«cls.name»</a>    	
-				'''.appendToBuilder
-			}
-			'''
-			</div></th>
-			</tr>
-			<tr>
-				<th><div class="columnHeader">Name</div></th>
-				<th><div class="columnHeader">Properties</div></th>
-				<th><div class="columnHeader">Documentation</div></th>
-			</tr>
-			'''.appendToBuilder
-			cls.EOperations.sortBy[name].forEach[
-				'''<tr>'''.appendToBuilder
-				documentEOperationHeader(id).appendToBuilder
-				''' </td><td> '''.appendToBuilder
-				findGenModelDocumentation(false).appendToBuilder
-				'''</td>
-				</tr>'''.appendToBuilder
-			]
-			'''
+			«IF !cls.EOperations.empty»
+				<table>
+					<tr>
+						<th colspan="3"><div class="tableHeader">Operations
+						«IF isSuperClass»
+							inherited from <a href="«getFileNameForPackage(cls.EPackage)»#«escapeLabel(cls.EPackage.nsPrefix+"."+cls.name)»">«cls.name»</a>    	
+						«ENDIF»
+						</div></th>
+					</tr>
+
+					<tr>
+						<th><div class="columnHeader">Name</div></th>
+						<th><div class="columnHeader">Properties</div></th>
+						<th><div class="columnHeader">Documentation</div></th>
+					</tr>
+					
+					«FOR op: cls.EOperations.sortBy[name]»
+						<tr>
+							«documentEOperationHeader(op, id)»
+							</td>
+							<td>
+								«findGenModelDocumentation(op, false)»
+							</td>
+						</tr>			
+					«ENDFOR»
+				</table>
+			«ENDIF»
 			«anchorDef(cls.EPackage.nsPrefix+"."+cls.name+".op","")»
-			'''.appendToBuilder
-		}
+		'''
 	}
 	
 	def private documentInheritedRefs(EClass cls, String id) {
