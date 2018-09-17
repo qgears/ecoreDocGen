@@ -261,6 +261,7 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
 							</td>
 							<td>
 								«findGenModelDocumentation(ref, ref.derived)»
+							</td>
 						</tr>
 					«ENDFOR»
 				</table>
