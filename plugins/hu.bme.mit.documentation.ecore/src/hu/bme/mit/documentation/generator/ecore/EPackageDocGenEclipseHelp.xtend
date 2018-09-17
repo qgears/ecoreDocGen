@@ -162,6 +162,7 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
 							«superCls.documentInheritedRefs(id)»
 						«ENDIF»
     				«ENDFOR»
+    				«cls.documentEClass("" + escapeLabel(cls.EPackage.nsPrefix+"."+cls.name), false)»
         		'''.appendToBuilder
         		/*
 				'''<table>'''.appendToBuilder
