@@ -129,7 +129,7 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
         			allSuperClasses.sortBy[name].forEach[
 						val superCls = it as EClass
 	    				'''<span>'''.appendToBuilder
-        				'''<a href="«getFileNameForPackage(superCls.EPackage)»#«escapeLabel(superCls.EPackage.nsPrefix+"."+superCls.name)»">«superCls.name»</a> | '''.appendToBuilder
+        				'''<a href="«linkToType(superCls)»">«superCls.name»</a> | '''.appendToBuilder
         				'''</span>'''.appendToBuilder    	
 					]
         		}
@@ -139,7 +139,7 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
         			'''<h6>Known subtypes</h6>'''.appendToBuilder
         			br.knownSubtypes.sortBy[name].forEach[
         				'''<span>'''.appendToBuilder
-        				'''<a href="«getFileNameForPackage(it.EPackage)»#«escapeLabel(it.EPackage.nsPrefix+"."+it.name)»">«it.name»</a> | '''.appendToBuilder    	
+        				'''<a href="«linkToType(it)»">«it.name»</a> | '''.appendToBuilder    	
         				'''</span>'''.appendToBuilder
         			]
         		}
@@ -217,7 +217,7 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
 					<tr>
 						<th colspan="3"><div class="tableHeader">Attributes
 						«IF isSuperClass »
-							inherited from <a href="«getFileNameForPackage(cls.EPackage)»#«escapeLabel(cls.EPackage.nsPrefix+"."+cls.name)»">«cls.name»</a>    	
+							inherited from <a href="«linkToType(cls)»">«cls.name»</a>    	
 						«ENDIF»
 						</div></th>
 					</tr>
@@ -272,7 +272,7 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
 					<tr>
 						<th colspan="3"><div class="tableHeader">Operations
 						«IF isSuperClass»
-							inherited from <a href="«getFileNameForPackage(cls.EPackage)»#«escapeLabel(cls.EPackage.nsPrefix+"."+cls.name)»">«cls.name»</a>    	
+							inherited from <a href="«linkToType(cls)»">«cls.name»</a>    	
 						«ENDIF»
 						</div></th>
 					</tr>
@@ -290,12 +290,18 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
 							<td>
 								«findGenModelDocumentation(op, false)»
 							</td>
-						</tr>			
+						</tr>
 					«ENDFOR»
 				</table>
 			«ENDIF»
 			«anchorDef(cls.EPackage.nsPrefix+"."+cls.name+".op","")»
 		'''
+	}
+	
+	
+	
+	def linkToType(EClassifier cls) {
+		'''«getFileNameForPackage(cls.EPackage)»#«escapeLabel(cls.EPackage.nsPrefix+"."+cls.name)»'''
 	}
 	
 	def private documentInheritedRefs(EClass cls, String id) {
@@ -305,7 +311,7 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
 			<table>
 				<tr>
 					<th colspan="3"><div class="tableHeader">Attributes inherited from 
-					<a href="«getFileNameForPackage(cls.EPackage)»#«escapeLabel(cls.EPackage.nsPrefix+"."+cls.name)»">«cls.name»</a>:
+					<a href="«linkToType(cls)»">«cls.name»</a>:
 					</div>
 					</th>
 				</tr>
@@ -326,7 +332,7 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
 			<table>
 				<tr>
 					<th colspan="3"><div class="tableHeader">References
-					inherited from <a href="«getFileNameForPackage(cls.EPackage)»#«escapeLabel(cls.EPackage.nsPrefix+"."+cls.name)»">«cls.name»</a>    	
+					inherited from <a href="«linkToType(cls)»">«cls.name»</a>    	
 					</div></th>
 				</tr>
 				<tr>
@@ -351,7 +357,7 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
 			<table>
 				<tr>
 					<th colspan="3"><div class="tableHeader">Operations
-					inherited from <a href="«getFileNameForPackage(cls.EPackage)»#«escapeLabel(cls.EPackage.nsPrefix+"."+cls.name)»">«cls.name»</a>    	
+					inherited from <a href="«linkToType(cls)»">«cls.name»</a>    	
 					</div></th>
 				</tr>
 				<tr>
@@ -532,7 +538,7 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
     	val typePckg = cls.EPackage
     	val typeName = cls.name
     	if(typePckg != null && filter.findFirst[typePckg.nsURI.contains(it)] == null){
-    		'''<a href="#«escapeLabel(typePckg.nsPrefix+ "." + typeName)»">«typeName»</a>'''
+    		'''<a href="«linkToType(cls)»">«typeName»</a>'''
     	} else {
     		'''«typeName»'''
     	}
