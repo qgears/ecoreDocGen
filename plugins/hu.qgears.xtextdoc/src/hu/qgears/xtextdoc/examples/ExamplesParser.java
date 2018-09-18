@@ -3,6 +3,7 @@ package hu.qgears.xtextdoc.examples;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import hu.qgears.commons.MultiMapHashImpl;
@@ -14,6 +15,12 @@ public class ExamplesParser {
 	{
 		public File[] examplesFolders;
 		public String[] exampleExtensions;
+		@Override
+		public String toString() {
+			return "Args [examplesFolders=" + Arrays.toString(examplesFolders) + ", exampleExtensions="
+					+ Arrays.toString(exampleExtensions) + "]";
+		}
+		
 	}
 	private Args args;
 	private MultiMapHashImpl<String, ExampleContent> keywordToContent=new MultiMapHashImpl<>();
@@ -30,7 +37,7 @@ public class ExamplesParser {
 				{
 					if(f.getName().endsWith(ext))
 					{
-						System.out.println("Found example file: "+f.getName());
+						//System.out.println("Found example file: "+f.getName());
 						parseExampleFile(f);
 					}
 				}
@@ -54,14 +61,14 @@ public class ExamplesParser {
 			if(kws.size()>1)
 			{
 				String keyword=kws.get(1);
-				System.out.println("Example of: '"+keyword+"'");
+				//System.out.println("Example of: '"+keyword+"'");
 				String content=findExampleContent(s, idx);
 				ExampleContent c=new ExampleContent(content);
 				keywordToContent.putSingle(keyword, c);
 				// Akos: '_' mark in annotation may mean a space or an underscore
 				if (keyword.contains("_")) {
 					keyword=keyword.replaceAll("_", " ");
-					System.out.println("Example of: '"+keyword+"'");
+					//System.out.println("Example of: '"+keyword+"'");
 					keywordToContent.putSingle(keyword, c);
 				}
 				if(kws.size()>2)
@@ -128,7 +135,7 @@ public class ExamplesParser {
 	public List<ExampleContent> getExamples(String key, ERefType type, String parentTypeName) {
 		List<ExampleContent> ret=new ArrayList<>();
 		if (key.equals("true")) {
-			System.out.println("");
+			//System.out.println("");
 		}
 		for(ExampleContent c: keywordToContent.get(key))
 		{

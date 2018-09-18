@@ -162,7 +162,7 @@ public class ProcessGrammar extends AbstractHTMLTemplate2{
 				if(tg instanceof EnumRule)
 				{
 					EnumRule er=(EnumRule) tg;
-					System.out.println("Enum rule reference: "+er.getName());
+					//System.out.println("Enum rule reference: "+er.getName());
 					EClassifier cla=er.getType().getClassifier();
 					enumUsecases.putSingle((EEnum)cla, new KeywordUsecase(root, rule));
 				}
@@ -181,16 +181,16 @@ public class ProcessGrammar extends AbstractHTMLTemplate2{
 	
 
 	private void findFirstKeyword(ParserRule p) {
-		System.out.print(""+p.getType().getClassifier().getName()+": ");
+		//System.out.print(""+p.getType().getClassifier().getName()+": ");
 		for(EObject c:new UtilIterable(p))
 		{
 			if(c instanceof Keyword)
 			{
-				System.out.println(((Keyword) c).getValue());
+				//System.out.println(((Keyword) c).getValue());
 				return;
 			}
 		}
-		System.out.println("ERROR - no keyword");
+		//System.out.println(p.getType().getClassifier().getName()+": ERROR - no keyword");
 		return;
 	}
 	private MultiKey findWidestMultikey(Keyword kv) {
@@ -221,10 +221,6 @@ public class ProcessGrammar extends AbstractHTMLTemplate2{
 		return ret;
 	}
 	private void documentKey(String key, HashSet<MultiKey> list) throws IOException {
-		if("previewLanguage".equals(key))
-		{
-			System.out.println("ALMA");
-		}
 		rtout.write("<h2> Keyword <a href=\"");
 		rtcout.write(hashTag);
 		writeHtml(key);
@@ -287,7 +283,7 @@ public class ProcessGrammar extends AbstractHTMLTemplate2{
 					for(MultiKey kv: rulesWhereExits.get(localRoot))
 					{
 //						rtcout.write(separator.getSeparator());
-						System.out.print("'"+key+"': ");
+						//System.out.print("'"+key+"': ");
 						Assignment a=getAssignmentOfKeyword(kv);
 						FeatureAssignment assignment=null;
 						if(a!=null)
@@ -313,9 +309,6 @@ public class ProcessGrammar extends AbstractHTMLTemplate2{
 										assignment=new FeatureAssignmentBoolean(feat);
 									}
 								}
-							}else
-							{
-								System.out.print("Container: "+ kv.getElement().eContainer().getClass());
 							}
 						}
 						if(assignment!=null)
@@ -332,11 +325,11 @@ public class ProcessGrammar extends AbstractHTMLTemplate2{
 						EClassifier type;
 						if(c!=null)
 						{
-							System.out.print("\t"+c.getName()+": ");
+							//System.out.print("\t"+c.getName()+": ");
 							type=c;
 						}else
 						{
-							System.out.print("\t"+localRoot.getType().getClassifier().getName()+": ");
+							//System.out.print("\t"+localRoot.getType().getClassifier().getName()+": ");
 							type=localRoot.getType().getClassifier();
 						}
 						if(kv.isFirstKeyword(localRoot))
@@ -379,11 +372,11 @@ public class ProcessGrammar extends AbstractHTMLTemplate2{
 								}
 							}
 						}
-						for(ParserRule p: ruleToRoot.get(localRoot))
-						{
-							System.out.print(p.getName()+", ");
-						}
-						System.out.println();
+//						for(ParserRule p: ruleToRoot.get(localRoot))
+//						{
+//							System.out.print(p.getName()+", ");
+//						}
+						//System.out.println();
 					}
 				}
 			}
@@ -424,7 +417,7 @@ public class ProcessGrammar extends AbstractHTMLTemplate2{
 					writeHtml(getDocumentation(fasr.rule.getType().getClassifier()));
 					rtout.write("</p>\n");
 				}
-				System.out.print("creates: "+fasr.rule.getType().getClassifier().getName());
+				//System.out.print("creates: "+fasr.rule.getType().getClassifier().getName());
 				for(ExampleContent s: host.examples.getExamples(key, ERefType.creator, fas.hostType.getName()))
 				{
 					rtout.write("<h3>Example</h3>\n<pre>\n");
@@ -448,7 +441,7 @@ public class ProcessGrammar extends AbstractHTMLTemplate2{
 				rtout.write("</em>: ");
 				writeHtml(getDocumentation(fascr.classifier));
 				rtout.write(" </p>\n");
-				System.out.print("creates: "+fascr.classifier.getName());
+				//System.out.print("creates: "+fascr.classifier.getName());
 				for(ExampleContent s: host.examples.getExamples(key, ERefType.reference, fas.hostType.getName()))
 				{
 					rtout.write("<h3>Example</h3>\n<pre>\n");

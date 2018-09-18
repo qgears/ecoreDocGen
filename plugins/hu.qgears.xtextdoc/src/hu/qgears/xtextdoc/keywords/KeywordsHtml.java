@@ -2,6 +2,7 @@ package hu.qgears.xtextdoc.keywords;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -24,8 +25,7 @@ import com.google.inject.Injector;
 import hu.qgears.xtextdoc.examples.ExamplesParser;
 
 public class KeywordsHtml {
-	class Args
-	{
+	public class Args {
 		public File[] xcore;
 		public File[] xtext;
 		public ExamplesParser.Args examples=new ExamplesParser.Args();
@@ -37,6 +37,15 @@ public class KeywordsHtml {
 					"0", "9,", "\n", " ", "/*", "*/", ",", "$", "=", "(", ")", ".","\"","`","'",
 					"*", "+", "-", "/", "//", "9", "A"
 				};
+		
+		public Args() {}
+
+		@Override
+		public String toString() {
+			return "Args [xcore=" + Arrays.toString(xcore) + ", xtext=" + Arrays.toString(xtext) + ", examples="
+					+ examples + ", output=" + output + "]";
+		}
+		
 	}
 	private Args createArgs() {
 		Args a=new Args();
@@ -52,20 +61,26 @@ public class KeywordsHtml {
 		a.examples.examplesFolders=new File[]{
 				new File(sourceFolder, "") //FIXME parameter
 		};
-		a.examples.exampleExtensions=new String[]{".dslgui", ".fsm", ".sdl"};
+		a.examples.exampleExtensions=new String[]{""}; //FIXME parameter
 		return a;
 	}
 	protected Set<String> skippedKeys=new HashSet<>();
 
 	public static void main(String[] args) throws Exception {
-		new KeywordsHtml().run();
+		KeywordsHtml keywordsHtml = new KeywordsHtml();
+		Args a = keywordsHtml.createArgs();
+		keywordsHtml.run(a);
 	}
+	
 	protected ExamplesParser examples;
+	
 	public KeywordsHtml() {
 	}
 	protected Args a;
-	private void run() throws Exception {
-		a=createArgs();
+	
+	public void run(Args a) throws Exception {
+		this.a = a;
+		System.out.println("Args: " + a);
 		
 		for(String s: a.skippedKeys)
 		{

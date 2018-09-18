@@ -13,10 +13,12 @@ Require-Bundle: org.eclipse.emf.ecore.xcore;bundle-version="1.2.2",
  org.eclipse.emf.ecore,
  org.eclipse.xtext,
  org.eclipse.xtend,
+ org.eclipse.core.runtime,
  hu.qgears.commons;bundle-version="7.1.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Export-Package: hu.qgears.xtextdoc,
  hu.qgears.xtextdoc.editor,
  hu.qgears.xtextdoc.generator,
+ hu.qgears.xtextdoc.keywords,
  hu.qgears.xtextdoc.util

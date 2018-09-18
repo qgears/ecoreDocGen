@@ -46,4 +46,17 @@
          </with>
       </definition>
    </extension>
+   <extension
+         id="KeywordHtmlApplication"
+         name="KeywordHtmlApplication"
+         point="org.eclipse.core.runtime.applications">
+      <application
+            cardinality="singleton-global"
+            thread="main"
+            visible="true">
+         <run
+               class="hu.qgears.xtextdoc.keywords.KeywordsHtmlApplication">
+         </run>
+      </application>
+   </extension>
 </plugin>

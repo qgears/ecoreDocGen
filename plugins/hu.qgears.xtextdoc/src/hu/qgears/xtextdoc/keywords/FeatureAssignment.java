@@ -17,7 +17,7 @@ public abstract class FeatureAssignment {
 	public FeatureAssignment(EStructuralFeature feat) {
 		hostType=(EClass)feat.eContainer();
 		this.feat=feat;
-		System.out.println("Feature assignment host: "+feat.getName()+" "+hostType);
+		//System.out.println("Feature assignment host: "+feat.getName()+" "+hostType);
 	}
 	public boolean semiEquals(FeatureAssignment obj) {
 		return hostType==obj.hostType && feat==obj.feat;

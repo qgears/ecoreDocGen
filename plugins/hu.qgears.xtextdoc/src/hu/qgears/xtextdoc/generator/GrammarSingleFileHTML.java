@@ -71,7 +71,7 @@ public class GrammarSingleFileHTML extends AbstractHTMLTemplate
 			StringBuilder sb=new StringBuilder();
 			h.documentEPackage(sb, p, Collections.<String>emptyList(), false);
 			rtcout.write(sb.toString());
-			System.out.println(""+p);
+			//System.out.println(""+p);
 		}
 	}
 	private EClassifier currentRule;
