@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/mbarbero/fr.obeo.releng.targetplatform -->
-<target name="EcoreDocGen Target Platform" sequenceNumber="1524558228">
+<target name="EcoreDocGen Target Platform" sequenceNumber="1537282280">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.viatra.addon.databinding.runtime.feature.feature.group" version="1.6.0.201706141007"/>
