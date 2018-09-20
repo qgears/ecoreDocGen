@@ -21,7 +21,7 @@ public class KeywordsHtmlApplication implements IApplication {
 	private static final String ARG_EXAMPLE_FOLDER = "ex_folder";
 	private static final String ARG_EXAMPLE_EXT = "ex_ext";
 	
-	private static final String ARG_LIST_SEPARATOR = "&&";
+	private static final String ARG_LIST_SEPARATOR = "%%";
 	
 	@Override
 	public Object start(IApplicationContext context) throws Exception {
