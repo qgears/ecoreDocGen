@@ -55,8 +55,7 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
 	private val tocBuilder = documentBuilderFactory.newDocumentBuilder;
 	private val toc = tocBuilder.newDocument
 	private val tocRoot = toc.createElement(NODE_ID_TOC)
-	private Element packageTopic;
-	
+		
 	private EPackage pckg
     private StringBuilder builder
     private List<String> filter
@@ -96,6 +95,15 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
         this.filter = Lists::newArrayList(nameRefFilter)
         this.outputFile = new File(outputDir, getFileNameForPackage(pckg));
         
+        val packageTopic = pckg.addToTOC
+        pckg.EClassifiers.sortBy[name].filter(EClass).forEach[ cls | {
+        	var subTopic = toc.createElement(NODE_ID_TOPIC)
+			    subTopic.setAttribute(ATTR_ID_LABEL, cls.name)
+			    subTopic.setAttribute(ATTR_ID_HREF, getFileNameForPackage(cls.EPackage)
+			    	+ "#" + escapeLabel(cls.EPackage.nsPrefix + "." + cls.name))
+			    packageTopic.appendChild(subTopic)
+        }]
+        
 		if (!(outputDir.exists && outputDir.isDirectory) && !outputDir.mkdirs) {
 			throw new RuntimeException("Could not create output directory: "
 				+ outputDir.absolutePath);
@@ -113,11 +121,17 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
         
         pckg.documentEPackageHeader.appendToBuilder
                 		
-        pckg.EClassifiers.sortBy[name].filter(EClass).forEach[ classifier |
-
-        	if(classifier instanceof EClass){
-	        		
+        pckg.EClassifiers.sortBy[name].forEach[ classifier |
+        	
+			if(classifier instanceof EDataType){
+        		if(classifier instanceof EEnum){
+        			val eenum = classifier as EEnum
+        			eenum.documentEEnumHeader.appendToBuilder
+        		}
+        	}
+        	else if(classifier instanceof EClass){
         		val cls = classifier as EClass
+        		        			        		
     			val allSuperClasses =  cls.EAllSuperTypes //new ArrayList;
     			//getAllSuperClassesRecursively(cls, allSuperClasses);
     			// getEAllSuperTypes?
@@ -194,12 +208,7 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
 				cls.documentEClass("" + escapeLabel(cls.EPackage.nsPrefix+"."+cls.name), false)
 				'''</table>'''.appendToBuilder
 				*/
-        	} else if(classifier instanceof EDataType){
-        		if(classifier instanceof EEnum){
-        			val eenum = classifier as EEnum
-        			eenum.documentEEnumHeader.appendToBuilder
-        		}
-        	}
+        	} 
         	
         ]
         
@@ -209,6 +218,15 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
         pkgDocWriter.append(builder);
         pkgDocWriter.close
     }
+	
+	def Element addToTOC(EPackage ePackage)
+	{
+		val packageTopic = toc.createElement(NODE_ID_TOPIC)	
+		packageTopic.setAttribute(ATTR_ID_HREF, getFileNameForPackage(pckg));
+		packageTopic.setAttribute(ATTR_ID_LABEL, ePackageFqName(pckg));
+		tocRoot.appendChild(packageTopic);
+		return packageTopic
+	}
 	
 	def private documentEClass(EClass cls, String id, boolean isSuperClass) {
 		'''
@@ -398,10 +416,7 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
     def private documentEPackageHeader(EPackage pckg) {
 		val packageName = ePackageFqName(pckg)
 		val title = "The <span class=\"packageName\">" + packageName + "</span> package"
-		packageTopic = toc.createElement(NODE_ID_TOPIC)	
-		packageTopic.setAttribute(ATTR_ID_HREF, getFileNameForPackage(pckg));
-		packageTopic.setAttribute(ATTR_ID_LABEL, ePackageFqName(pckg));
-		tocRoot.appendChild(packageTopic);
+		
     	'''
 			«documentHeader("h1", title, packageName, pckg.nsPrefix, pckg)»
 			<div class="">EPackage properties:</div>
@@ -474,12 +489,7 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
     def private documentEClassHeader(EClass cls){
 	    '''«cls.documentEClassifierHeader»'''.appendToBuilder
 	    var hasPropList = false;
-	    var subTopic = toc.createElement(NODE_ID_TOPIC)
-	    subTopic.setAttribute(ATTR_ID_LABEL, cls.name)
-	    subTopic.setAttribute(ATTR_ID_HREF, getFileNameForPackage(cls.EPackage)
-	    	+ "#" + escapeLabel(cls.EPackage.nsPrefix + "." + cls.name))
-	    packageTopic.appendChild(subTopic)
-	    
+	    	    
 	    if(cls.isInterface()){
 	      '''<div class="eclassProps">EClass properties:<div class="eclassPropList">
 	      	<span class="label">Interface</span>'''.appendToBuilder
