@@ -44,7 +44,12 @@ class EPackageDocGenHtml implements IDocGenerator{
     private StringBuilder builder
     private List<String> filter
     
-    override documentEPackage(StringBuilder sb, EPackage pckg, List<String> nameRefFilter, boolean genHeader){
+    override documentEPackage(StringBuilder sb, EPackage pckg, List<String> nameRefFilter, boolean genHeader)
+    {
+    	documentEPackage(sb, pckg, nameRefFilter, genHeader, "")
+    }
+    
+    override documentEPackage(StringBuilder sb, EPackage pckg, List<String> nameRefFilter, boolean genHeader, String tocFolder){
         this.builder = sb
         this.pckg = pckg
         this.filter = Lists::newArrayList(nameRefFilter)

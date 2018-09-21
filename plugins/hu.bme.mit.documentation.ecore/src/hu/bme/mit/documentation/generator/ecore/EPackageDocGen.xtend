@@ -43,7 +43,11 @@ class EPackageDocGen implements IDocGenerator{
     private List<String> filter
     private boolean floatTables
     
-    override documentEPackage(StringBuilder sb, EPackage pckg, List<String> nameRefFilter, boolean genHeader){
+    override documentEPackage(StringBuilder sb, EPackage pckg, List<String> nameRefFilter, boolean genHeader)
+    {
+    	documentEPackage(sb, pckg, nameRefFilter, genHeader, "")
+    }
+    override documentEPackage(StringBuilder sb, EPackage pckg, List<String> nameRefFilter, boolean genHeader, String tocFolder){
     	this.floatTables = false;
         this.builder = sb
         this.pckg = pckg

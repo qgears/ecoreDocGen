@@ -29,6 +29,8 @@ public interface IDocGenerator {
 	 * @param nameRefFilter
 	 * @param genHeader
 	 */
+	void documentEPackage(final StringBuilder sb, final EPackage pckg, final List<String> nameRefFilter, final boolean genHeader, String tocFolder);
+	
 	void documentEPackage(final StringBuilder sb, final EPackage pckg, final List<String> nameRefFilter, final boolean genHeader);
 
 	/**

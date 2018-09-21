@@ -43,6 +43,7 @@ public class GenerateDocApplication implements IApplication {
 	private static final String ARG_FILTER_FILE = "filterFile";
 	private static final String ARG_OUTPUT_FILE = "outputFile";
 	private static final String ARG_METAMODEL_FILE = "metamodelFile";
+	private static final String ARG_TOC_TARGET_FOLDER = "tocFolder";
 
 	private static IDocGenerator getDocGenerator(String format) throws UnsupportedTypeException{
 		if("html".contentEquals(format)) {
@@ -64,6 +65,7 @@ public class GenerateDocApplication implements IApplication {
 		opts.addOption(ARG_OUTPUT_FILE,true,"File where the documentation should be generated.");
 		opts.addOption(ARG_FORMAT,true,"Documentation format. Currently, html and latex are supported.");
 		opts.addOption(ARG_FILTER_FILE,true,"Optional .properties file where filtered packages are described - no anchors are generated for elements in these packages.");
+		opts.addOption(ARG_TOC_TARGET_FOLDER,true,"Optional folder to specify which folder will the contents will be on the eclipse help server (relative path of the contents from project/plugin)");
 
 		CommandLineParser parser = new BasicParser();
 		CommandLine cli = parser.parse(opts, arguments);
@@ -78,6 +80,14 @@ public class GenerateDocApplication implements IApplication {
 			if(cli.hasOption(ARG_FILTER_FILE)){
 				filterFile = cli.getOptionValue(ARG_FILTER_FILE);
 			}
+			
+			String tocFolder = "";
+			if(cli.hasOption(ARG_TOC_TARGET_FOLDER)){
+				tocFolder = cli.getOptionValue(ARG_TOC_TARGET_FOLDER);
+				if(!tocFolder.endsWith("/"))
+					tocFolder = tocFolder + "/";
+			}
+			
 			ResourceSet set = loadMetamodel(new File(metamodelFile));
 			File output = new File(outputFile);
 			IDocGenerator docGen = getDocGenerator(format);
@@ -89,7 +99,7 @@ public class GenerateDocApplication implements IApplication {
 				filter = new File(filterFile);
 			}
 			System.out.println("Generating documentation from "+metamodelFile + " to "+output.toString()+" in format "+format);
-			UtilDocGenerator.generateDocForResourceSet(set, output, filter, docGen);
+			UtilDocGenerator.generateDocForResourceSet(set, output, filter, docGen, tocFolder);
 			System.out.println("Documentation generation finished without errors.");
 		}
 		else{

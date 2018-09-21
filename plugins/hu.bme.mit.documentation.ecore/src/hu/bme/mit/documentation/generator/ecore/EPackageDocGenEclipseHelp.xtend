@@ -89,17 +89,29 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
      * @param genHeader ignored 
      */
     override documentEPackage(StringBuilder sb, EPackage pckg, 
-    	List<String> nameRefFilter, boolean genHeader){
+    	List<String> nameRefFilter, boolean genHeader)
+    {
+    	documentEPackage(sb, pckg, nameRefFilter, genHeader, "");		
+    }
+    /**
+     * Generates package documentation into a separate HTML file.
+     * @param sb ignored
+     * @param pckg the package, of which a HTML file will be generated
+     * @param nameRefFilter TODO
+     * @param genHeader ignored 
+     */
+    override documentEPackage(StringBuilder sb, EPackage pckg, 
+    	List<String> nameRefFilter, boolean genHeader, String tocFolder){
         this.builder = new StringBuilder();
         this.pckg = pckg
         this.filter = Lists::newArrayList(nameRefFilter)
         this.outputFile = new File(outputDir, getFileNameForPackage(pckg));
         
-        val packageTopic = pckg.addToTOC
+        val packageTopic = pckg.addToTOC(tocFolder)
         pckg.EClassifiers.sortBy[name].filter(EClass).forEach[ cls | {
         	var subTopic = toc.createElement(NODE_ID_TOPIC)
 			    subTopic.setAttribute(ATTR_ID_LABEL, cls.name)
-			    subTopic.setAttribute(ATTR_ID_HREF, getFileNameForPackage(cls.EPackage)
+			    subTopic.setAttribute(ATTR_ID_HREF, tocFolder + getFileNameForPackage(cls.EPackage)
 			    	+ "#" + escapeLabel(cls.EPackage.nsPrefix + "." + cls.name))
 			    packageTopic.appendChild(subTopic)
         }]
@@ -219,10 +231,10 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
         pkgDocWriter.close
     }
 	
-	def Element addToTOC(EPackage ePackage)
+	def Element addToTOC(EPackage ePackage, String tocFolder)
 	{
 		val packageTopic = toc.createElement(NODE_ID_TOPIC)	
-		packageTopic.setAttribute(ATTR_ID_HREF, getFileNameForPackage(pckg));
+		packageTopic.setAttribute(ATTR_ID_HREF, tocFolder + getFileNameForPackage(pckg));
 		packageTopic.setAttribute(ATTR_ID_LABEL, ePackageFqName(pckg));
 		tocRoot.appendChild(packageTopic);
 		return packageTopic
