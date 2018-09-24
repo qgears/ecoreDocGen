@@ -81,8 +81,7 @@ public abstract class AbstractGenerateEcoreDoc extends AbstractHandler {
                         UtilDocGenerator.generateDocForResourceSet(model, 
                         		new File(outFile.getLocationURI()), 
                         		new File(filterFile.getLocationURI()),
-                        		docGen,
-                        		"");
+                        		docGen);
                     }
                 }
                 else if (element instanceof IFolder)
@@ -118,8 +117,7 @@ public abstract class AbstractGenerateEcoreDoc extends AbstractHandler {
                     UtilDocGenerator.generateDocForResourceSet(model, 
                     		new File(outFile.getLocationURI()), 
                     		new File(filterFile.getLocationURI()),
-                    		docGen,
-                    		"");
+                    		docGen);
                 
                 }
                 

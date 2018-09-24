@@ -15,22 +15,22 @@ public class DocGenerationInstance{
 	
 	private boolean genHeader = true;
 	
-	public void doGenerateAllSubpackages(IDocGenerator docGen, StringBuilder sb, List<EPackage> pckg, ArrayList<String> filter, String tocFolder) {
+	public void doGenerateAllSubpackages(IDocGenerator docGen, StringBuilder sb, List<EPackage> pckg, ArrayList<String> filter) {
 		for (EPackage p : pckg) {
-			generateAll(docGen, sb, p, filter, tocFolder);
+			generateAll(docGen, sb, p, filter);
 		}
 		docGen.generateTail();
 	}
-	private void generateAll(IDocGenerator docGen, StringBuilder sb, EPackage pckg, ArrayList<String> filter, String tocFolder){
+	private void generateAll(IDocGenerator docGen, StringBuilder sb, EPackage pckg, ArrayList<String> filter){
 		if(!pckg.getEClassifiers().isEmpty()){
 			if (filter == null || !filter.contains(pckg.getNsURI())) {
-				docGen.documentEPackage(sb, pckg, filter,genHeader, tocFolder);
+				docGen.documentEPackage(sb, pckg, filter,genHeader);
 				//the first, non-empty package is found, no need to generate headers for the others
 				genHeader = false;
 			}
 		}
 		for (EPackage subpck : pckg.getESubpackages()) {
-			generateAll(docGen, sb, subpck, filter, tocFolder);
+			generateAll(docGen, sb, subpck, filter);
 		}
 	}
 	

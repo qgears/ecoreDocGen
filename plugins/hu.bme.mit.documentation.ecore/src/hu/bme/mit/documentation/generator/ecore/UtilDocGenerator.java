@@ -42,7 +42,7 @@ public class UtilDocGenerator {
 	 * @see #getRootEPackages(ResourceSet)
 	 */
 	public static void generateDocForEPackage(List<EPackage> rootPackage, 
-			File outputFile, File filterFile, IDocGenerator docGen, String tocFolder) {
+			File outputFile, File filterFile, IDocGenerator docGen) {
 
 		StringBuilder sb = new StringBuilder();
 
@@ -73,7 +73,7 @@ public class UtilDocGenerator {
 				}
 			}
 
-			new DocGenerationInstance().doGenerateAllSubpackages(docGen, sb, rootPackage, filter, tocFolder);
+			new DocGenerationInstance().doGenerateAllSubpackages(docGen, sb, rootPackage, filter);
 			
 			if (OutputType.SINGLE_FILE.equals(docGen.getOutputType())) {
 				fos = new FileOutputStream(outputFile, false);
@@ -136,9 +136,9 @@ public class UtilDocGenerator {
 	 * @param docGen
 	 * @param tocFolder
 	 */
-	public static void generateDocForResourceSet(ResourceSet set, File output, File filter, IDocGenerator docGen, String tocFolder) {
+	public static void generateDocForResourceSet(ResourceSet set, File output, File filter, IDocGenerator docGen) {
 		List<EPackage> pcks = getRootEPackages(set);
-		generateDocForEPackage(pcks, output, filter, docGen, tocFolder);
+		generateDocForEPackage(pcks, output, filter, docGen);
 	}
 
 	/**
