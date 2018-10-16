@@ -25,6 +25,7 @@ import org.eclipse.xtext.linking.lazy.LazyLinkingResource;
 import org.eclipse.xtext.util.CancelIndicator;
 
 import hu.bme.mit.documentation.generator.ecore.EPackageDocGen;
+import hu.bme.mit.documentation.generator.ecore.EPackageDocGenEclipseHelp;
 import hu.bme.mit.documentation.generator.ecore.EPackageDocGenHtml;
 import hu.bme.mit.documentation.generator.ecore.IDocGenerator;
 import hu.bme.mit.documentation.generator.ecore.UnsupportedTypeException;
@@ -44,11 +45,12 @@ public class GenerateDocApplication implements IApplication {
 	private static final String ARG_METAMODEL_FILE = "metamodelFile";
 
 	private static IDocGenerator getDocGenerator(String format) throws UnsupportedTypeException{
-		if("html".contentEquals(format)){
+		if("html".contentEquals(format)) {
 			return new EPackageDocGenHtml();
-		}
-		if("latex".contentEquals(format)){
+		} else if("latex".contentEquals(format)) {
 			return new EPackageDocGen();
+		} else if ("eclipsehelp".contentEquals(format)) {
+			return new EPackageDocGenEclipseHelp();
 		}
 		throw new UnsupportedTypeException(format);
 	}
@@ -62,7 +64,7 @@ public class GenerateDocApplication implements IApplication {
 		opts.addOption(ARG_OUTPUT_FILE,true,"File where the documentation should be generated.");
 		opts.addOption(ARG_FORMAT,true,"Documentation format. Currently, html and latex are supported.");
 		opts.addOption(ARG_FILTER_FILE,true,"Optional .properties file where filtered packages are described - no anchors are generated for elements in these packages.");
-
+		
 		CommandLineParser parser = new BasicParser();
 		CommandLine cli = parser.parse(opts, arguments);
 		HelpFormatter hf = new HelpFormatter();
@@ -76,9 +78,13 @@ public class GenerateDocApplication implements IApplication {
 			if(cli.hasOption(ARG_FILTER_FILE)){
 				filterFile = cli.getOptionValue(ARG_FILTER_FILE);
 			}
+						
 			ResourceSet set = loadMetamodel(new File(metamodelFile));
 			File output = new File(outputFile);
 			IDocGenerator docGen = getDocGenerator(format);
+			
+			docGen.setOutputFile(output);
+			
 			File filter = null;
 			if(filterFile!=null){
 				filter = new File(filterFile);

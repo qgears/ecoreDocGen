@@ -12,6 +12,8 @@
  package hu.bme.mit.documentation.generator.ecore
 
 import com.google.common.collect.Lists
+import hu.qgears.documentation.DocumentationFieldUtils
+import java.io.File
 import java.io.Reader
 import java.io.StringReader
 import java.util.ArrayList
@@ -31,7 +33,6 @@ import org.eclipse.emf.ecore.EStructuralFeature
 import org.eclipse.emf.ecore.ETypedElement
 import org.tautua.markdownpapers.ast.Document
 import org.tautua.markdownpapers.parser.Parser
-import hu.qgears.documentation.DocumentationFieldUtils
 
 /**
  * @author Abel Hegedus
@@ -43,7 +44,8 @@ class EPackageDocGenHtml implements IDocGenerator{
     private StringBuilder builder
     private List<String> filter
     
-    override documentEPackage(StringBuilder sb, EPackage pckg, List<String> nameRefFilter, boolean genHeader){
+    override documentEPackage(StringBuilder sb, EPackage pckg, List<String> nameRefFilter, boolean genHeader)
+    {
         this.builder = sb
         this.pckg = pckg
         this.filter = Lists::newArrayList(nameRefFilter)
@@ -341,7 +343,7 @@ function getElementsByTagNames(list,obj) {
 		}
 	}
 	
-	def private getAllSuperClassesRecursively(EClass cls, List<EClass> list) {
+	def private void getAllSuperClassesRecursively(EClass cls, List<EClass> list) {
 		for (EClass superCls : cls.ESuperTypes) {
 			if (!list.contains(superCls)) {
 				list.add(superCls);
@@ -655,5 +657,16 @@ function getElementsByTagNames(list,obj) {
 	 def private backref(EClass cls) {
 	 	EcoreHelper.getBackReferences(cls)
 	 }
+	
+	/**
+	 * This method has no effect in this generator.
+	 */
+	 override setOutputFile(File outputFile) {
+	 	// not required for StringBuilder-based generators
+	 }
+	
+	override getOutputType() {
+		IDocGenerator.OutputType.SINGLE_FILE;
+	}
 	
 }

@@ -12,6 +12,7 @@
  package hu.bme.mit.documentation.generator.ecore
 
 import com.google.common.collect.Lists
+import java.io.File
 import java.io.Reader
 import java.io.StringReader
 import java.util.ArrayList
@@ -42,7 +43,8 @@ class EPackageDocGen implements IDocGenerator{
     private List<String> filter
     private boolean floatTables
     
-    override documentEPackage(StringBuilder sb, EPackage pckg, List<String> nameRefFilter, boolean genHeader){
+    override documentEPackage(StringBuilder sb, EPackage pckg, List<String> nameRefFilter, boolean genHeader)
+    {
     	this.floatTables = false;
         this.builder = sb
         this.pckg = pckg
@@ -458,6 +460,17 @@ class EPackageDocGen implements IDocGenerator{
     
 	override generateTail() {
 		//not required for latex documents
+	}
+	
+	/**
+	 * This method has no effect in this generator.
+	 */
+	override setOutputFile(File outputFile) {
+		// not required for StringBuilder-based generators
+	}
+	
+	override getOutputType() {
+		IDocGenerator.OutputType.SINGLE_FILE;
 	}
 	
 }

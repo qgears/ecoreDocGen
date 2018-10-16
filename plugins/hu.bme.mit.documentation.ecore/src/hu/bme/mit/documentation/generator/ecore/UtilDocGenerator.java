@@ -20,6 +20,8 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 
+import hu.bme.mit.documentation.generator.ecore.IDocGenerator.OutputType;
+
 /**
  * Utility class for generating documentation.
  * 
@@ -39,8 +41,8 @@ public class UtilDocGenerator {
 	 * @param docGen
 	 * @see #getRootEPackages(ResourceSet)
 	 */
-	public static void generateDocForEPackage(List<EPackage> rootPackage, File outputFile, File filterFile,
-			IDocGenerator docGen) {
+	public static void generateDocForEPackage(List<EPackage> rootPackage, 
+			File outputFile, File filterFile, IDocGenerator docGen) {
 
 		StringBuilder sb = new StringBuilder();
 
@@ -64,17 +66,22 @@ public class UtilDocGenerator {
 				}
 			}
 			filter.add("http://www.eclipse.org/emf/2002/Ecore");
-			new DocGenerationInstance().doGenerateAllSubpackages(docGen, sb, rootPackage, filter);
+			
 			if (!outputFile.getParentFile().exists()){
 				if (!outputFile.getParentFile().mkdirs()){
 					throw new IOException("Cannot create folder "+outputFile.getParent());
 				}
 			}
+
+			new DocGenerationInstance().doGenerateAllSubpackages(docGen, sb, rootPackage, filter);
 			
-			fos = new FileOutputStream(outputFile, false);
-			fos.write(sb.toString().getBytes());
+			if (OutputType.SINGLE_FILE.equals(docGen.getOutputType())) {
+				fos = new FileOutputStream(outputFile, false);
+				fos.write(sb.toString().getBytes());
+			}
 		} catch (IOException e) {
-			Logger.getLogger(UtilDocGenerator.class).error("Exception occurred when generating ecore doc", e);
+			Logger.getLogger(UtilDocGenerator.class).error("Exception occurred "
+					+ "when generating ecore doc", e);
 		} finally {
 			try {
 				if (fis != null) {
@@ -127,6 +134,7 @@ public class UtilDocGenerator {
 	 * @param output
 	 * @param filter
 	 * @param docGen
+	 * @param tocFolder
 	 */
 	public static void generateDocForResourceSet(ResourceSet set, File output, File filter, IDocGenerator docGen) {
 		List<EPackage> pcks = getRootEPackages(set);

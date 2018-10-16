@@ -24,7 +24,7 @@ import org.eclipse.xtext.nodemodel.impl.LeafNode;
 import org.eclipse.xtext.parser.IParseResult;
 import org.eclipse.xtext.resource.XtextResource;
 
-import hu.bme.mit.documentation.generator.ecore.EPackageDocGenHtml;
+import hu.bme.mit.documentation.generator.ecore.EPackageDocGenEclipseHelp;
 
 /**
  * Generates a single HTML file with the following content:
@@ -67,7 +67,7 @@ public class GrammarSingleFileHTML extends AbstractHTMLTemplate
 	{
 		for(EPackage p:packages)
 		{
-			EPackageDocGenHtml h=new EPackageDocGenHtml();
+			EPackageDocGenEclipseHelp h=new EPackageDocGenEclipseHelp();
 			StringBuilder sb=new StringBuilder();
 			h.documentEPackage(sb, p, Collections.<String>emptyList(), false);
 			rtcout.write(sb.toString());

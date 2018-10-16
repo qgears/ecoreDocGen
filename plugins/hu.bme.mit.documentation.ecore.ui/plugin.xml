@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
+   <extension point="org.eclipse.core.expressions.propertyTesters">
+    <propertyTester
+      namespace="hu.qgears.ecoredoc"
+      id="hu.qgears.ecoredoc.testEcoreFolder"
+      properties="hasXnEcoreFile"
+      type="org.eclipse.core.resources.IFolder"
+      class="hu.qgears.ecoredoc.HasXnEcoreFile">
+    </propertyTester>
+  </extension>
 <extension
          point="org.eclipse.ui.commands">
       <command
@@ -13,6 +22,11 @@
             id="hu.bme.mit.documentation.ecore.ui.generatedoc.html"
             name="Generate HTML Documentation">
       </command>
+      <command
+            defaultHandler="hu.bme.mit.documentation.ecore.ui.handlers.GenerateEcoreDocEclipseHelp"
+            id="hu.bme.mit.documentation.ecore.ui.generatedoc.eclipsehelp"
+            name="Generate Eclipse Help Documentation">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
@@ -21,6 +35,16 @@
             locationURI="popup:org.eclipse.ui.popup.any">
          <command
                commandId="hu.bme.mit.documentation.ecore.ui.generatedoc.html"
+               style="push">
+            <visibleWhen
+                  checkEnabled="false">
+               <reference
+                     definitionId="hu.bme.mit.documentation.ecore.ui.ecoredef">
+               </reference>
+            </visibleWhen>
+         </command>
+         <command
+               commandId="hu.bme.mit.documentation.ecore.ui.generatedoc.eclipsehelp"
                style="push">
             <visibleWhen
                   checkEnabled="false">
@@ -49,13 +73,22 @@
                variable="selection">
             <iterate
                   ifEmpty="false">
+               <or>
                   <adapt
                      type="org.eclipse.core.resources.IFile">
-                  <test
-                        property="org.eclipse.core.resources.name"
-                        value="*.?core">
-                  </test>
-               </adapt>
+	                 <test
+	                       property="org.eclipse.core.resources.name"
+	                       value="*.?core">
+	                 </test>
+	              </adapt>
+	              <adapt
+                     type="org.eclipse.core.resources.IFolder">
+                     <test
+	                       property="hu.qgears.ecoredoc.hasXnEcoreFile"
+	                       forcePluginActivation="true">
+	                 </test>
+	              </adapt>
+	           </or>
             </iterate>
          </with>
       </definition>

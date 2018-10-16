@@ -19,6 +19,8 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.jface.viewers.ISelection;
@@ -54,10 +56,11 @@ public abstract class AbstractGenerateEcoreDoc extends AbstractHandler {
                         String ecoreFileName = file.getName().substring(0,file.getName().indexOf("."));
                         String outputFileName = ecoreFileName+"."+getFileExtension();
                         String filterFileName = ecoreFileName+".docgen";
-                        IFile outFile = null;
-                        IFile filterFile = null;
+                        final IFile outFile;
+                        final IFile filterFile;
                         
                         IContainer parent = file.getParent();
+                        
                         if(parent instanceof IProject){
                             IProject project = (IProject) parent;
                             outFile = project.getFile(outputFileName);
@@ -66,14 +69,58 @@ public abstract class AbstractGenerateEcoreDoc extends AbstractHandler {
                             IFolder folder = (IFolder) parent;
                             outFile = folder.getFile(outputFileName);
                             filterFile = folder.getFile(filterFileName);
+                        } else {
+                        	outFile = null;
+                        	filterFile = null;
                         }
-                        IDocGenerator docGen = getCodeGenerator();
+                        
+                        final IDocGenerator docGen = getCodeGenerator();
+                        
+                        docGen.setOutputFile(outFile.getLocation().toFile());
+                        
                         UtilDocGenerator.generateDocForResourceSet(model, 
                         		new File(outFile.getLocationURI()), 
                         		new File(filterFile.getLocationURI()),
                         		docGen);
                     }
                 }
+                else if (element instanceof IFolder)
+                {
+                	IFolder folder = (IFolder) element;
+                    ResourceSet model = loadModel(folder);
+                    
+                    String ecoreFileName = folder.getName();
+                    String outputFileName = ecoreFileName+"."+getFileExtension();
+                    String filterFileName = ecoreFileName+".docgen";
+                    final IFile outFile;
+                    final IFile filterFile;
+                    
+                    IContainer parent = folder.getParent();
+                    
+                    if(parent instanceof IProject){
+                        IProject project = (IProject) parent;
+                        outFile = project.getFile(outputFileName);
+                        filterFile = project.getFile(filterFileName);
+                    } else if(parent instanceof IFolder) {
+                        IFolder parentFolder = (IFolder) parent;
+                        outFile = parentFolder.getFile(outputFileName);
+                        filterFile = parentFolder.getFile(filterFileName);
+                    } else {
+                    	outFile = null;
+                    	filterFile = null;
+                    }
+                    
+                    final IDocGenerator docGen = getCodeGenerator();
+                    
+                    docGen.setOutputFile(outFile.getLocation().toFile());
+                    
+                    UtilDocGenerator.generateDocForResourceSet(model, 
+                    		new File(outFile.getLocationURI()), 
+                    		new File(filterFile.getLocationURI()),
+                    		docGen);
+                
+                }
+                
             }
         }
 
@@ -86,6 +133,40 @@ public abstract class AbstractGenerateEcoreDoc extends AbstractHandler {
         set.getResource(ecoreURI, true);
         return set;
     }
+    
+    protected ResourceSet loadModel(IFolder folder){
+        ResourceSet set = UtilDocGenerator.newResourceSet();
+        
+        addModelsToResourceSet(set, folder);
+        
+        return set;
+    }
+    
+    void addModelsToResourceSet(ResourceSet resourceSet, IResource resource)
+    {
+    	if( resource instanceof IFile)
+    	{
+    		IFile file = (IFile)resource;
+    		if(file.getFileExtension().equals("ecore") || file.getFileExtension().equals("xcore"))
+    		{
+	    		URI ecoreURI = URI.createPlatformResourceURI(file.getFullPath().toString(), true);
+	    		resourceSet.getResource(ecoreURI, true);
+    		}
+    	}
+    	else if( resource instanceof IFolder)
+    	{
+    		IFolder folder = (IFolder)resource;
+    		try {
+				for( IResource child : folder.members() )
+					addModelsToResourceSet(resourceSet, child);
+			} catch (CoreException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	}
+    	
+    }
+    
     
     /**
 	 * Should be overridden by subclasses to allow documentation generation in
