@@ -1,23 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature id="hu.bme.mit.ecoredocgen.feature" >
-      <category name="hu.qgears.gendoc"/>
-   </feature>
-   <feature id="hu.bme.mit.ecoredocgen.validation.feature">
-      <category name="hu.qgears.gendoc"/>
-   </feature>
-   <feature id="hu.bme.mit.ecoredocgen.feature.source" >
-      <category name="hu.qgears.gendoc.source"/>
-   </feature>
-   <feature id="hu.bme.mit.ecoredocgen.validation.feature.source">
-      <category name="hu.qgears.gendoc.source"/>
-   </feature>
    <bundle id="hu.qgears.gendoc.app">
       <category name="hu.qgears.gendoc"/>
    </bundle>
    <bundle id="hu.qgears.gendoc.app.source">
       <category name="hu.qgears.gendoc.source"/>
    </bundle>
+   <bundle id="hu.qgears.documentation">
+      <category name="hu.qgears.gendoc"/>
+   </bundle>
+   <bundle id="hu.qgears.documentation.source">
+      <category name="hu.qgears.gendoc.source"/>
+   </bundle>
+
+   <bundle id="hu.bme.mit.documentation.ecore">
+      <category name="hu.qgears.gendoc"/>
+   </bundle>
+   <bundle id="hu.bme.mit.documentation.ecore.source">
+      <category name="hu.qgears.gendoc.source"/>
+   </bundle>
+   
    <bundle id="hu.qgears.xtextdoc">
       <category name="hu.qgears.gendoc"/>
    </bundle>

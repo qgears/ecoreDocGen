@@ -33,6 +33,46 @@ POM for Eclipse Plug-ins that are part of the ecoreDocGen utility, and utilize i
 			   </configuration>
 			</plugin>
 		</plugins>
+	<pluginManagement>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.xtend</groupId>
+				<artifactId>xtend-maven-plugin</artifactId>
+				<version>${xtend-version}</version>
+				<!-- optionally you can configure a different target folder -->
+				<executions>
+					<execution>
+						<goals>
+							<goal>compile</goal>
+							<goal>testCompile</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<outputDirectory>${basedir}/xtend-gen</outputDirectory>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>org.eclipse.jdt</groupId>
+						<artifactId>org.eclipse.jdt.core</artifactId>
+						<version>3.10.0</version>
+					</dependency>
+					<dependency>
+						<groupId>org.eclipse.jdt</groupId>
+						<artifactId>org.eclipse.jdt.launching</artifactId>
+						<version>3.10.0</version>
+					</dependency>
+					<dependency>
+						<groupId>org.eclipse.jdt</groupId>
+						<artifactId>org.eclipse.jdt.debug</artifactId>
+						<version>3.10.1</version>
+					</dependency>
+				
+				</dependencies>
+			</plugin>
+		</plugins>
+
+	</pluginManagement>
 	</build>
 	<profiles>
             <!-- This profile is activated when the version bump script is executed.
@@ -52,5 +92,4 @@ POM for Eclipse Plug-ins that are part of the ecoreDocGen utility, and utilize i
                     </modules>
             </profile>
     </profiles>
-
 </project>

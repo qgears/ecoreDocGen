@@ -2,12 +2,6 @@ target "EcoreDocGen Target Platform"
 
 with requirements
 
-location "http://download.eclipse.org/viatra/updates/release" viatra-repo {
-	org.eclipse.viatra.addon.databinding.runtime.feature.feature.group [1.6.0.201706141007,1.6.0.201706141007]
-	org.eclipse.viatra.query.runtime.feature.feature.group [1.6.0.201706141007,1.6.0.201706141007]
-	org.eclipse.viatra.transformation.runtime.emf.feature.feature.group [1.6.0.201706141007,1.6.0.201706141007] 
-}
-
 location "https://buildserver.qgears.net/mirror/eclipse-mars-mirror/" eclipse-mars {
 	org.eclipse.xtext.sdk.feature.group [2.9.1.v201512180746,2.9.1.v201512180746]
 	org.eclipse.xtext.doc [2.9.1.v201512180746,2.9.1.v201512180746]
@@ -21,6 +15,6 @@ location "https://buildserver.qgears.net/mirror/eclipse-mars-mirror/" eclipse-ma
 }
 location "https://buildserver.qgears.net/update-sites/qgears-opensource-repo-public/" qgears-opensource-repo {
 	//Opensource utils features and plugins
-	hu.qgears.commons  [7.1.0.201806211330,7.1.0.201806211330]
+	hu.qgears.commons [7.1.1.201810302112632,7.1.1.201810302112632] 
 }
 

@@ -1,14 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/mbarbero/fr.obeo.releng.targetplatform -->
-<target name="EcoreDocGen Target Platform" sequenceNumber="1537282280">
+<target name="EcoreDocGen Target Platform" sequenceNumber="1555342456">
   <locations>
-    <location includeMode="planner" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="org.eclipse.viatra.addon.databinding.runtime.feature.feature.group" version="1.6.0.201706141007"/>
-      <unit id="org.eclipse.viatra.query.runtime.feature.feature.group" version="1.6.0.201706141007"/>
-      <unit id="org.eclipse.viatra.transformation.runtime.emf.feature.feature.group" version="1.6.0.201706141007"/>
-      <repository id="viatra-repo" location="http://download.eclipse.org/viatra/updates/release"/>
-    </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.xtext.sdk.feature.group" version="2.9.1.v201512180746"/>
       <unit id="org.eclipse.xtext.doc" version="2.9.1.v201512180746"/>
@@ -20,7 +14,7 @@
       <repository id="eclipse-mars" location="https://buildserver.qgears.net/mirror/eclipse-mars-mirror/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="hu.qgears.commons" version="7.1.0.201806211330"/>
+      <unit id="hu.qgears.commons" version="7.1.1.201810302112632"/>
       <repository id="qgears-opensource-repo" location="https://buildserver.qgears.net/update-sites/qgears-opensource-repo-public/"/>
     </location>
   </locations>

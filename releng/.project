@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>hu.qgears.gendoc.product</name>
+	<name>ecoredocgen-build</name>
 	<comment></comment>
 	<projects>
 	</projects>
 	<buildSpec>
-	</buildSpec>
+		</buildSpec>
 	<natures>
+	
 	</natures>
 </projectDescription>
