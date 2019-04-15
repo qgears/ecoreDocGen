@@ -79,19 +79,7 @@ public class GenerateDocApplication implements IApplication {
 				filterFile = cli.getOptionValue(ARG_FILTER_FILE);
 			}
 						
-			ResourceSet set = loadMetamodel(new File(metamodelFile));
-			File output = new File(outputFile);
-			IDocGenerator docGen = getDocGenerator(format);
-			
-			docGen.setOutputFile(output);
-			
-			File filter = null;
-			if(filterFile!=null){
-				filter = new File(filterFile);
-			}
-			System.out.println("Generating documentation from "+metamodelFile + " to "+output.toString()+" in format "+format);
-			UtilDocGenerator.generateDocForResourceSet(set, output, filter, docGen);
-			System.out.println("Documentation generation finished without errors.");
+			run(metamodelFile, outputFile, format, filterFile);
 		}
 		else{
 			hf.printHelp("GenerateDocApplication", opts);
@@ -99,6 +87,23 @@ public class GenerateDocApplication implements IApplication {
 					"At least the following argumens must be specified: -format, -outputFile, -metamodelFile");
 		}
 		return EXIT_OK;
+	}
+
+	public void run(String metamodelFile, String outputFile, String format, String filterFile)
+			throws IOException, UnsupportedTypeException {
+		ResourceSet set = loadMetamodel(new File(metamodelFile));
+		File output = new File(outputFile);
+		IDocGenerator docGen = getDocGenerator(format);
+		
+		docGen.setOutputFile(output);
+		
+		File filter = null;
+		if(filterFile!=null){
+			filter = new File(filterFile);
+		}
+		System.out.println("Generating documentation from "+metamodelFile + " to "+output.toString()+" in format "+format);
+		UtilDocGenerator.generateDocForResourceSet(set, output, filter, docGen);
+		System.out.println("Documentation generation finished without errors.");
 	}
 
 	

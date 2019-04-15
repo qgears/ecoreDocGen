@@ -593,7 +593,7 @@ function getElementsByTagNames(list,obj) {
     	'''«text.replaceAll("&","&amp;").replaceAll("<","&lt;")»'''
     }
     
-    def private escapeLabel(String text){
+    def static public escapeLabel(String text){
     	'''«text.replaceAll("_","").replaceAll("\\.","")»'''
     }
     

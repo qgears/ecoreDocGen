@@ -10,6 +10,8 @@ import java.util.Set;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EcorePackage;
+import org.eclipse.emf.ecore.plugin.EcorePlugin;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xcore.XcorePackage;
@@ -22,6 +24,9 @@ import org.eclipse.xtext.resource.XtextResourceSet;
 
 import com.google.inject.Injector;
 
+import hu.bme.mit.documentation.generator.ecore.EPackageDocGenHtml;
+import hu.bme.mit.documentation.generator.ecore.IDocGenerator;
+import hu.bme.mit.documentation.generator.ecore.UtilDocGenerator;
 import hu.qgears.xtextdoc.examples.ExamplesParser;
 
 public class KeywordsHtml {
@@ -30,6 +35,7 @@ public class KeywordsHtml {
 		public File[] xtext;
 		public ExamplesParser.Args examples=new ExamplesParser.Args();
 		public File output;
+		public boolean enableMetaDocGen;
 		public String[] skippedKeys=new String[]
 				{
 					"{", "}",
@@ -97,10 +103,20 @@ public class KeywordsHtml {
 		xcoreSupport.createInjectorAndDoEMFRegistration();
 		Injector injector = xtextSupport.createInjectorAndDoEMFRegistration();
 		XtextResourceSet resourceSet = injector.getInstance(XtextResourceSet.class);
+		
+		/*Allow loading EInt, EString etc ...*/
+		EcorePackage.eINSTANCE.getClass();
+        resourceSet.getURIConverter().getURIMap().putAll(
+        EcorePlugin.computePlatformURIMap(false));
 		for(File f: a.xcore)
 		{
 			Resource r = resourceSet.createResource(URI.createFileURI(f.getCanonicalPath()));
 			r.load(resourceSet.getLoadOptions());
+		}
+		if (a.enableMetaDocGen){
+			File output = new File (a.output,getMetamodelDoc());
+			IDocGenerator docGen =  new EPackageDocGenHtml();
+			UtilDocGenerator.generateDocForResourceSet(resourceSet, output, null, docGen);
 		}
 		for(File f: a.xtext)
 		{
@@ -115,6 +131,12 @@ public class KeywordsHtml {
 				new ProcessGrammar(this).process(r);
 			}
 		}
+	}
+	public String getMetamodelDoc() {
+		if (a.enableMetaDocGen){
+			return "Metamodel.xhtml";
+		}
+		return null;
 	}
 	List<EObject> unfold(ParserRule root)
 	{

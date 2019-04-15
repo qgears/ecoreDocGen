@@ -33,6 +33,7 @@ import org.eclipse.xtext.Keyword;
 import org.eclipse.xtext.ParserRule;
 import org.eclipse.xtext.RuleCall;
 
+import hu.bme.mit.documentation.generator.ecore.EPackageDocGenHtml;
 import hu.qgears.commons.MultiMapHashImpl;
 import hu.qgears.commons.MultiMapHashToHashSetImpl;
 import hu.qgears.commons.UtilComma;
@@ -242,7 +243,7 @@ public class ProcessGrammar extends AbstractHTMLTemplate2{
 				rtout.write("<br/>\n");
 				EEnum en=literal.getEEnum();
 				rtout.write("In enumeration: ");
-				writeHtml(en.getName());
+				writeEClass(en);
 				rtout.write(": ");
 				writeHtml(getDocumentation(en));
 				rtout.write("<br/>\n");
@@ -340,7 +341,7 @@ public class ProcessGrammar extends AbstractHTMLTemplate2{
 							}else
 							{
 								rtout.write("<p>Creates: <em>");
-								writeHtml(type.getName());
+								writeEClass(type);
 								rtout.write("</em>: ");
 								writeHtml(getDocumentation(type));
 								rtout.write("</p>\n");
@@ -390,7 +391,7 @@ public class ProcessGrammar extends AbstractHTMLTemplate2{
 			for(EClassifier t: fas.createsType)
 			{
 				rtout.write("<p>Creates: <em>");
-				writeHtml(t.getName());
+				writeEClass(t);
 				rtout.write("</em>: ");
 				writeHtml(getDocumentation(t));
 				rtout.write("</p>\n");
@@ -398,11 +399,11 @@ public class ProcessGrammar extends AbstractHTMLTemplate2{
 			if(fas instanceof FeatureAssignmentRule)
 			{
 				rtout.write("<p>Metamodel feature: <em>");
-				rtcout.write(fas.feat.getName());
+				writeEFeature(fas.feat);
 				rtout.write("</em>: ");
 				writeHtml(getDocumentation(fas.feat));
 				rtout.write("</p>\n<p>Applyable on metamodel type: <em>");
-				writeHtml(fas.hostType.getName());
+				writeEClass(fas.hostType);
 				rtout.write("</em> ");
 				writeHtml(getDocumentation(fas.hostType));
 				rtout.write("</p>\n");
@@ -412,7 +413,7 @@ public class ProcessGrammar extends AbstractHTMLTemplate2{
 					!fasr.rule.getType().getClassifier().getName().equals("EInt"))
 				{
 					rtout.write("<p>Metamodel type to create: <em>");
-					writeHtml(fasr.rule.getType().getClassifier().getName());
+					writeEClass(fasr.rule.getType().getClassifier());
 					rtout.write("</em>: ");
 					writeHtml(getDocumentation(fasr.rule.getType().getClassifier()));
 					rtout.write("</p>\n");
@@ -431,13 +432,13 @@ public class ProcessGrammar extends AbstractHTMLTemplate2{
 				rtout.write("</em>: ");
 				writeHtml(getDocumentation(fas.feat));
 				rtout.write("</p>\n<p>Applyable on metamodel type: <em>");
-				writeHtml(fas.hostType.getName());
+				writeEClass(fas.hostType);
 				rtout.write("</em> ");
 				writeHtml(getDocumentation(fas.hostType));
 				rtout.write("</p>\n");
 				FeatureAssignmentCrossReference fascr=(FeatureAssignmentCrossReference) fas;
 				rtout.write("<p>Reference to: <em>");
-				writeHtml(fascr.classifier.getName());
+				writeEClass(fascr.classifier);
 				rtout.write("</em>: ");
 				writeHtml(getDocumentation(fascr.classifier));
 				rtout.write(" </p>\n");
@@ -455,7 +456,7 @@ public class ProcessGrammar extends AbstractHTMLTemplate2{
 				rtout.write("</em>: ");
 				writeHtml(getDocumentation(fas.feat));
 				rtout.write("</p>\n<p>Applyable on metamodel type: <em>");
-				writeHtml(fas.hostType.getName());
+				writeEClass(fas.hostType);
 				rtout.write("</em> ");
 				writeHtml(getDocumentation(fas.hostType));
 				rtout.write("</p>\n");
@@ -477,11 +478,37 @@ public class ProcessGrammar extends AbstractHTMLTemplate2{
 				if(c!=fas.hostType)
 				{
 					rtout.write("<em>");
-					writeHtml(c.getName());
+					writeEClass(c);
 					rtout.write("</em> \n");
 				}
 			}
 			rtout.write("</p>\n");
+		}
+	}
+	private void writeEFeature(EStructuralFeature feat) throws IOException {
+		if (host.getMetamodelDoc() == null){
+			writeHtml(feat.getName());
+		} else {
+			EClassifier c = feat.getEContainingClass();
+			String link = host.getMetamodelDoc()+"#"+ EPackageDocGenHtml.escapeLabel(c.getEPackage().getNsPrefix()+c.getName())+"."+feat.getName();
+			rtout.write("<a href=\"");
+			rtcout.write(link);
+			rtout.write("\">");
+			writeHtml(c.getName() + "::" +feat.getName());
+			rtout.write("</a>");
+		}
+	}
+	
+	private void writeEClass(EClassifier hostType) throws IOException {
+		if (host.getMetamodelDoc() == null){
+			writeHtml(hostType.getName());
+		} else {
+			String link = host.getMetamodelDoc()+"#"+ EPackageDocGenHtml.escapeLabel(hostType.getEPackage().getNsPrefix()+hostType.getName());
+			rtout.write("<a href=\"");
+			rtcout.write(link);
+			rtout.write("\">");
+			writeHtml(hostType.getName());
+			rtout.write("</a>");
 		}
 	}
 	/**
