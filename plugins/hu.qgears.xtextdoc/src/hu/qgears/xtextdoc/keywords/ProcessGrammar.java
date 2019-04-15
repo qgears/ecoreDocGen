@@ -428,7 +428,7 @@ public class ProcessGrammar extends AbstractHTMLTemplate2{
 			} else if (fas instanceof FeatureAssignmentCrossReference)
 			{
 				rtout.write("<p>Metamodel feature: <em>");
-				rtcout.write(fas.feat.getName());
+				writeEFeature(fas.feat);
 				rtout.write("</em>: ");
 				writeHtml(getDocumentation(fas.feat));
 				rtout.write("</p>\n<p>Applyable on metamodel type: <em>");
