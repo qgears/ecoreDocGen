@@ -3,7 +3,9 @@ package hu.qgears.xtextdoc.keywords;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -34,6 +36,7 @@ import org.eclipse.xtext.ParserRule;
 import org.eclipse.xtext.RuleCall;
 
 import hu.bme.mit.documentation.generator.ecore.EPackageDocGenHtml;
+import hu.qgears.commons.MultiMap;
 import hu.qgears.commons.MultiMapHashImpl;
 import hu.qgears.commons.MultiMapHashToHashSetImpl;
 import hu.qgears.commons.UtilComma;
@@ -48,7 +51,7 @@ import hu.qgears.xtextdoc.util.MultiKey;
 import hu.qgears.xtextdoc.util.UtilIterable;
 
 public class ProcessGrammar extends AbstractHTMLTemplate2{
-	private MultiMapHashToHashSetImpl<EEnum, KeywordUsecase> enumUsecases=new MultiMapHashToHashSetImpl<>();
+	private MultiMap<EEnum, KeywordUsecase> enumUsecases=new MultiMapHashImpl<>();
 	private List<String> keys;
 	private MultiMapHashToHashSetImpl<String, MultiKey> keywords;
 	/**
@@ -181,18 +184,18 @@ public class ProcessGrammar extends AbstractHTMLTemplate2{
 	}
 	
 
-	private void findFirstKeyword(ParserRule p) {
+	private Keyword findFirstKeyword(ParserRule p) {
 		//System.out.print(""+p.getType().getClassifier().getName()+": ");
 		for(EObject c:new UtilIterable(p))
 		{
 			if(c instanceof Keyword)
 			{
 				//System.out.println(((Keyword) c).getValue());
-				return;
+				return (Keyword) c;
 			}
 		}
 		//System.out.println(p.getType().getClassifier().getName()+": ERROR - no keyword");
-		return;
+		return null;
 	}
 	private MultiKey findWidestMultikey(Keyword kv) {
 		if(kv.eContainer() instanceof Group)
@@ -222,6 +225,7 @@ public class ProcessGrammar extends AbstractHTMLTemplate2{
 		return ret;
 	}
 	private void documentKey(String key, HashSet<MultiKey> list) throws IOException {
+		
 		rtout.write("<h2> Keyword <a href=\"");
 		rtcout.write(hashTag);
 		writeHtml(key);
@@ -233,6 +237,9 @@ public class ProcessGrammar extends AbstractHTMLTemplate2{
 		MultiMapHashImpl<ParserRule, MultiKey> rulesWhereExits=new MultiMapHashImpl<>();
 		for(MultiKey kv: list)
 		{
+			if (key.equals("component")){
+				System.out.println("ájjunkmög");
+			}
 			EObject container=kv.getElement().eContainer();
 			if(container instanceof EnumLiteralDeclaration)
 			{
@@ -247,7 +254,7 @@ public class ProcessGrammar extends AbstractHTMLTemplate2{
 				rtout.write(": ");
 				writeHtml(getDocumentation(en));
 				rtout.write("<br/>\n");
-				HashSet<KeywordUsecase> a=enumUsecases.get(en);
+				Collection<KeywordUsecase> a = enumUsecases.get(en);
 				rtout.write("Used in types: \n");
 				for(KeywordUsecase p: a)
 				{
@@ -285,7 +292,7 @@ public class ProcessGrammar extends AbstractHTMLTemplate2{
 					{
 //						rtcout.write(separator.getSeparator());
 						//System.out.print("'"+key+"': ");
-						Assignment a=getAssignmentOfKeyword(kv);
+						Assignment a=getAssignmentOfKeyword(localRoot,kv);
 						FeatureAssignment assignment=null;
 						if(a!=null)
 						{
@@ -361,7 +368,7 @@ public class ProcessGrammar extends AbstractHTMLTemplate2{
 							}else
 							{
 								rtout.write("Used on type: ");
-								writeHtml(type.getName());
+								writeEClass(type);
 								rtout.write(". Documentation: ");
 								writeHtml(getDocumentation(type));
 								rtout.write("<br/>\n");
@@ -388,9 +395,12 @@ public class ProcessGrammar extends AbstractHTMLTemplate2{
 		{
 			rtcout.write(separator.getSeparator());
 			rtout.write("\n");
-			for(EClassifier t: fas.createsType)
+			for (EClassifier t : ordered(fas.createsType))
 			{
 				rtout.write("<p>Creates: <em>");
+				if (t.getName().equals("Component")){
+					System.out.println("Ájjunkcsakmeg");
+				}
 				writeEClass(t);
 				rtout.write("</em>: ");
 				writeHtml(getDocumentation(t));
@@ -473,7 +483,7 @@ public class ProcessGrammar extends AbstractHTMLTemplate2{
 				throw new RuntimeException("Not implemented type");
 			}
 			rtout.write("<p>\n");
-			for(EClassifier c: fas.usedOnTypes)
+			for(EClassifier c: ordered(fas.usedOnTypes))
 			{
 				if(c!=fas.hostType)
 				{
@@ -484,6 +494,16 @@ public class ProcessGrammar extends AbstractHTMLTemplate2{
 			}
 			rtout.write("</p>\n");
 		}
+	}
+	private List<EClassifier> ordered(Collection<EClassifier> createsType) {
+		List<EClassifier> l = new ArrayList<>();
+		l.sort(new Comparator<EClassifier>() {
+			@Override
+			public int compare(EClassifier c1, EClassifier c2) {
+				return c1.getName().compareTo(c2.getName());
+			}
+		});
+		return l;
 	}
 	private void writeEFeature(EStructuralFeature feat) throws IOException {
 		if (host.getMetamodelDoc() == null){
@@ -552,16 +572,23 @@ public class ProcessGrammar extends AbstractHTMLTemplate2{
 		}
 		return doc;
 	}
-	private Assignment getAssignmentOfKeyword(MultiKey kv) {
+	private Assignment getAssignmentOfKeyword(ParserRule localRoot,MultiKey kv) {
+		
+		if (kv.isFirstKeyword(localRoot)){
+			
+		}
+		
 		if(kv.getElement().eContainer() instanceof Assignment)
 		{
 			Assignment a=(Assignment)kv.getElement().eContainer();
+			System.out.println("Assignment : "+kv + " "+a.getFeature());
 			return a;
 		}else
 		{
 			Assignment a=getNextAssignment(kv);
 			if(a!=null)
 			{
+				System.out.println("Next assignment : "+kv + " "+a.getFeature());
 				return a;
 			}
 		}

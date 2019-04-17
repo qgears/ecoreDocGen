@@ -134,9 +134,6 @@ public class ExamplesParser {
 
 	public List<ExampleContent> getExamples(String key, ERefType type, String parentTypeName) {
 		List<ExampleContent> ret=new ArrayList<>();
-		if (key.equals("true")) {
-			//System.out.println("");
-		}
 		for(ExampleContent c: keywordToContent.get(key))
 		{
 			if (c.parentTypeName!= null && !c.parentTypeName.equals(parentTypeName)) {
