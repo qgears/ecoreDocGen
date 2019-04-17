@@ -19,6 +19,7 @@ import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EEnumLiteral;
 import org.eclipse.emf.ecore.EModelElement;
+import org.eclipse.emf.ecore.ENamedElement;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -53,7 +54,33 @@ import hu.qgears.xtextdoc.util.UtilIterable;
 public class ProcessGrammar extends AbstractHTMLTemplate2{
 	private MultiMap<EEnum, KeywordUsecase> enumUsecases=new MultiMapHashImpl<>();
 	private List<String> keys;
-	private MultiMapHashToHashSetImpl<String, MultiKey> keywords;
+	private MultiMap<String, MultiKey> keywords;
+	
+	
+	private Comparator<ENamedElement> byNameEcore = new Comparator<ENamedElement>() {
+		@Override
+		public int compare(ENamedElement c1, ENamedElement c2) {
+			return c1.getName().compareTo(c2.getName());
+		}
+	};
+	private Comparator<AbstractRule> byNameXtext = new Comparator<AbstractRule>() {
+		@Override
+		public int compare(AbstractRule c1, AbstractRule c2) {
+			return c1.getName().compareTo(c2.getName());
+		}
+	};
+	
+	private Comparator<FeatureAssignment> byFeatureAss = new Comparator<FeatureAssignment>() {
+		@Override
+		public int compare(FeatureAssignment c1, FeatureAssignment c2) {
+			int bf = byNameEcore.compare(c1.feat, c2.feat);
+			if (bf == 0){
+				bf = byNameEcore.compare(c1.hostType, c2.hostType);
+			}
+			return bf;
+		}
+	};
+	
 	/**
 	 * Map the rule to the root rule that calls it directly or indirectly.
 	 */
@@ -68,7 +95,7 @@ public class ProcessGrammar extends AbstractHTMLTemplate2{
 	}
 	public void process(Resource r) throws Exception {
 		Set<String> types=new HashSet<>();
-		keywords=new MultiMapHashToHashSetImpl<>();
+		keywords=new MultiMapHashImpl<>();
 		TreeIterator<EObject> iter=r.getAllContents();
 		boolean first=true;
 		while(iter.hasNext())
@@ -224,7 +251,7 @@ public class ProcessGrammar extends AbstractHTMLTemplate2{
 		Collections.sort(ret, new NameComparator());
 		return ret;
 	}
-	private void documentKey(String key, HashSet<MultiKey> list) throws IOException {
+	private void documentKey(String key, Collection<MultiKey> collection) throws IOException {
 		
 		rtout.write("<h2> Keyword <a href=\"");
 		rtcout.write(hashTag);
@@ -235,7 +262,7 @@ public class ProcessGrammar extends AbstractHTMLTemplate2{
 		writeHtml(key);
 		rtout.write("</a></h2>\n");
 		MultiMapHashImpl<ParserRule, MultiKey> rulesWhereExits=new MultiMapHashImpl<>();
-		for(MultiKey kv: list)
+		for(MultiKey kv: collection)
 		{
 			if (key.equals("component")){
 				System.out.println("ájjunkmög");
@@ -281,7 +308,7 @@ public class ProcessGrammar extends AbstractHTMLTemplate2{
 			}
 		}
 		Map<FeatureAssignment, FeatureAssignment> assignments=new HashMap<FeatureAssignment, FeatureAssignment>();
-		for(ParserRule localRoot: rulesWhereExits.keySet())
+		for(ParserRule localRoot: ordered(rulesWhereExits.keySet(),byNameXtext))
 		{
 			if(localRoot.getType().getClassifier() instanceof EClass)
 			{
@@ -391,11 +418,11 @@ public class ProcessGrammar extends AbstractHTMLTemplate2{
 		}
 		UtilComma separator=new UtilComma("<hr/>");
 		rtcout.write(separator.getSeparator());
-		for(FeatureAssignment fas: assignments.keySet())
+		for(FeatureAssignment fas: ordered(assignments.keySet(),byFeatureAss))
 		{
 			rtcout.write(separator.getSeparator());
 			rtout.write("\n");
-			for (EClassifier t : ordered(fas.createsType))
+			for (EClassifier t : ordered(fas.createsType,byNameEcore))
 			{
 				rtout.write("<p>Creates: <em>");
 				if (t.getName().equals("Component")){
@@ -483,7 +510,7 @@ public class ProcessGrammar extends AbstractHTMLTemplate2{
 				throw new RuntimeException("Not implemented type");
 			}
 			rtout.write("<p>\n");
-			for(EClassifier c: ordered(fas.usedOnTypes))
+			for(EClassifier c: ordered(fas.usedOnTypes,byNameEcore))
 			{
 				if(c!=fas.hostType)
 				{
@@ -495,16 +522,12 @@ public class ProcessGrammar extends AbstractHTMLTemplate2{
 			rtout.write("</p>\n");
 		}
 	}
-	private List<EClassifier> ordered(Collection<EClassifier> createsType) {
-		List<EClassifier> l = new ArrayList<>();
-		l.sort(new Comparator<EClassifier>() {
-			@Override
-			public int compare(EClassifier c1, EClassifier c2) {
-				return c1.getName().compareTo(c2.getName());
-			}
-		});
+	private <T> List<T> ordered(Collection<T> keySet,Comparator<? super T> c) {
+		List<T> l = new ArrayList<>(keySet);
+		l.sort(c);
 		return l;
 	}
+	
 	private void writeEFeature(EStructuralFeature feat) throws IOException {
 		if (host.getMetamodelDoc() == null){
 			writeHtml(feat.getName());
