@@ -1,9 +1,17 @@
 package hu.qgears.xtextdoc.keywords;
 
+import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EStructuralFeature;
 
+/**
+ * 
+ * boolFiled?='boolkeyword'
+ */
 public class FeatureAssignmentBoolean extends FeatureAssignment
 {
+	public FeatureAssignmentBoolean(EClassifier hostType, EStructuralFeature feat) {
+		super(hostType, feat);
+	}
 	public FeatureAssignmentBoolean(EStructuralFeature feat) {
 		super(feat);
 	}

@@ -1,12 +1,24 @@
 package hu.qgears.xtextdoc.keywords;
 
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EStructuralFeature;
 
+/**
+ *
+ *
+ * 'reference' refObj=[RefType] 
+ */
 public class FeatureAssignmentCrossReference extends FeatureAssignment
 {
 	public EClassifier classifier;
 
+	
+	public FeatureAssignmentCrossReference(EClassifier hostType, EStructuralFeature feat, EClassifier crossReferenceType) {
+		super(hostType, feat);
+		this.classifier = crossReferenceType;
+	}
+	
 	public FeatureAssignmentCrossReference(EStructuralFeature feat, EClassifier classifier) {
 		super(feat);
 		this.classifier = classifier;

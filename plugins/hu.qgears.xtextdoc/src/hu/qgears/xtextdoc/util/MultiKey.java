@@ -3,7 +3,6 @@ package hu.qgears.xtextdoc.util;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.xtext.AbstractElement;
 import org.eclipse.xtext.Alternatives;
 import org.eclipse.xtext.Group;
@@ -13,16 +12,15 @@ import org.eclipse.xtext.ParserRule;
 public class MultiKey {
 	private final Keyword keys[];
 	private String value;
-	private AbstractElement element;
 	private int elementsLength;
+	private KeyInfo keyInfo;
+
 	public MultiKey(Keyword kv) {
 		keys=new Keyword[]{kv};
 		value=kv.getValue();
-		element=kv;
 		elementsLength=1;
-		detectOrKey();
 	}
-	public MultiKey(List<AbstractElement> kvs) {
+	public MultiKey(List<Keyword> kvs) {
 		keys=kvs.toArray(new Keyword[]{});
 		StringBuilder ret=new StringBuilder();
 		UtilComma c=new UtilComma(" ");
@@ -32,19 +30,13 @@ public class MultiKey {
 			ret.append(k.getValue());
 		}
 		value=ret.toString();
-		element=keys[0];
 		elementsLength=keys.length;
-		detectOrKey();
 	}
-	private void detectOrKey()
-	{
-		if(element.eContainer() instanceof Alternatives)
-		{
-			Alternatives a=(Alternatives) element.eContainer();
-			element=a;
-			elementsLength=1;
-		}
+	
+	public Keyword[] getKeys() {
+		return keys;
 	}
+	
 	@Override
 	public int hashCode() {
 		int ret=113;
@@ -73,51 +65,47 @@ public class MultiKey {
 	public String toString() {
 		return "'"+value+"'";
 	}
-	public boolean isFirstKeyword(ParserRule localRoot) {
-		{
-			{
-				AbstractElement ae=(AbstractElement)localRoot.getAlternatives();
-				while(ae instanceof Group)
-				{
-					Group g=(Group) ae;
-					ae=g.getElements().get(0);
-					if(ae instanceof Alternatives)
-					{
-						for(AbstractElement ae2: ((Alternatives) ae).getElements())
-						{
-							if(ae2 instanceof Group)
-							{
-								if(((Group) ae2).getElements().get(0)==keys[0])
-								{
-									return true;
-								}
-							}
-						}
-					}
-				}
+	
+	
+	private boolean isFirstKeyWordInBranch(AbstractElement a) {
+		if (a == getFirstKey()){
+			return true;
+		} else if (a instanceof Group) {
+			for (AbstractElement g : ((Group) a).getElements()) {
+				//only the first branch is accepted
+				return isFirstKeyWordInBranch(g);
 			}
-		}
-		{
-			AbstractElement ae= localRoot.getAlternatives();
-			findFirstKeyword(localRoot);
-			if(ae instanceof Group)
-			{
-				Group g=(Group) ae;
-				if(g.getElements().get(0) == keys[0])
-				{
+		} else if (a instanceof Alternatives){
+			for (AbstractElement branch : ((Alternatives) a).getElements()){
+				if (isFirstKeyWordInBranch(branch)){
+					//all alternative branches are accepted
 					return true;
 				}
 			}
 		}
+		
 		return false;
 	}
-	private void findFirstKeyword(ParserRule localRoot) {
+	
+	public boolean isFirstKeyword(ParserRule localRoot) {
+		
+		
+		return isFirstKeyWordInBranch(localRoot.getAlternatives());
+		
 	}
-	public AbstractElement getElement()
-	{
-		return element;
-	}
+
 	public int getElementsLength() {
 		return elementsLength;
+	}
+	
+	public void setKeyInfo(KeyInfo keyInfo) {
+		this.keyInfo = keyInfo;
+	}
+	
+	public KeyInfo getKeyInfo() {
+		return keyInfo;
+	}
+	public Keyword getFirstKey() {
+		return keys[0];
 	}
 }

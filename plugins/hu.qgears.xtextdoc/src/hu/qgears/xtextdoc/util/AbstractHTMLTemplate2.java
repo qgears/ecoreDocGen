@@ -1,8 +1,5 @@
 package hu.qgears.xtextdoc.util;
 
-import hu.qgears.xtextdoc.util.AbstractTemplate;
-import hu.qgears.xtextdoc.util.EscapeString;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
