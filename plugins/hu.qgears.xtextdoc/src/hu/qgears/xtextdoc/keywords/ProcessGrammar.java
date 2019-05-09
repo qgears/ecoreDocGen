@@ -559,7 +559,7 @@ public class ProcessGrammar extends AbstractHTMLTemplate2{
 		
 	private <T> List<T> ordered(Collection<T> keySet,Comparator<? super T> c) {
 		List<T> l = new ArrayList<>(keySet);
-		l.sort(c);
+		Collections.sort(l,c);
 		return l;
 	}
 	
