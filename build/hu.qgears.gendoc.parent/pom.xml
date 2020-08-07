@@ -91,7 +91,7 @@
                             </property>
                     </activation>
                     <modules>
-                            <module>../../qgears/hu.qgears.gendoc.parent</module>
+                            <module>../../</module>
                     </modules>
             </profile>
     </profiles>
