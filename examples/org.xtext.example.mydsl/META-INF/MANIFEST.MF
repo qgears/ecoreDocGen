@@ -6,6 +6,7 @@ Bundle-Localization: plugin
 Bundle-Version: 1.0.0.qualifier
 Bundle-ClassPath: .
 Bundle-SymbolicName: org.xtext.example.mydsl;singleton:=true
+Automatic-Module-Name: org.xtext.example.mydsl
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.xtext;visibility:=reexport,
  org.eclipse.equinox.common;bundle-version="3.5.0",

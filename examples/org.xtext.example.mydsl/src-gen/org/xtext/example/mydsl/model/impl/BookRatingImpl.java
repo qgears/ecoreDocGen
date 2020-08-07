@@ -82,6 +82,7 @@ public class BookRatingImpl extends ModelElementImpl implements BookRating {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public Book getBook() {
 		if (book != null && book.eIsProxy()) {
 			InternalEObject oldBook = (InternalEObject)book;
@@ -108,6 +109,7 @@ public class BookRatingImpl extends ModelElementImpl implements BookRating {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setBook(Book newBook) {
 		Book oldBook = book;
 		book = newBook;
@@ -120,6 +122,7 @@ public class BookRatingImpl extends ModelElementImpl implements BookRating {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public int getRating() {
 		return rating;
 	}
@@ -129,6 +132,7 @@ public class BookRatingImpl extends ModelElementImpl implements BookRating {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	public void setRating(int newRating) {
 		int oldRating = rating;
 		rating = newRating;
@@ -214,7 +218,7 @@ public class BookRatingImpl extends ModelElementImpl implements BookRating {
 	public String toString() {
 		if (eIsProxy()) return super.toString();
 
-		StringBuffer result = new StringBuffer(super.toString());
+		StringBuilder result = new StringBuilder(super.toString());
 		result.append(" (rating: ");
 		result.append(rating);
 		result.append(')');
