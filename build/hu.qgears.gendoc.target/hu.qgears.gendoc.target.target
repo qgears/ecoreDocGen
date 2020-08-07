@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
-<target name="EcoreDocGen Target Platform" sequenceNumber="1596552708">
+<target name="EcoreDocGen Target Platform" sequenceNumber="1596821292">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.xtext.sdk.feature.group" version="2.21.0.v20200302-1509"/>
       <unit id="org.eclipse.xtext.doc" version="2.21.0.v20200302-1241"/>
       <unit id="org.eclipse.xtext.xbase.lib.feature.group" version="2.21.0.v20200302-1136"/>
+      <unit id="org.eclipse.emf.mwe.core.feature.feature.group" version="1.5.2.v20200224-0816"/>
       <unit id="org.eclipse.emf.sdk.feature.group" version="2.21.0.v20200205-0529"/>
       <unit id="org.eclipse.emf.ecore.feature.group" version="2.21.0.v20200127-1342"/>
       <unit id="org.eclipse.emf.transaction.feature.group" version="1.12.0.201805140824"/>

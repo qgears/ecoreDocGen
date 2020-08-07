@@ -6,6 +6,7 @@ location "https://download.eclipse.org/releases/2020-03/" eclipse-2020-03-mirror
 	org.eclipse.xtext.sdk.feature.group [2.21.0.v20200302-1509,2.21.0.v20200302-1509]
 	org.eclipse.xtext.doc [2.21.0.v20200302-1241,2.21.0.v20200302-1241]
 	org.eclipse.xtext.xbase.lib.feature.group [2.21.0.v20200302-1136,2.21.0.v20200302-1136]
+	org.eclipse.emf.mwe.core.feature.feature.group [1.5.2.v20200224-0816,1.5.2.v20200224-0816]
 	
 	org.eclipse.emf.sdk.feature.group [2.21.0.v20200205-0529,2.21.0.v20200205-0529]
 	org.eclipse.emf.ecore.feature.group [2.21.0.v20200127-1342,2.21.0.v20200127-1342]
