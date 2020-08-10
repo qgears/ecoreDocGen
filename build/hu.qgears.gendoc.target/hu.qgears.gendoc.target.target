@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
-<target name="EcoreDocGen Target Platform" sequenceNumber="1596821292">
+<target name="EcoreDocGen Target Platform" sequenceNumber="1597075200">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.xtext.sdk.feature.group" version="2.21.0.v20200302-1509"/>
@@ -15,7 +15,7 @@
       <repository id="eclipse-2020-03-mirror" location="https://download.eclipse.org/releases/2020-03/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="false" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="hu.qgears.commons" version="8.0.0.20200429105326"/>
+      <unit id="hu.qgears.commons" version="8.1.0.20200810174027"/>
       <repository id="qgears-opensource-repo" location="https://buildserver.qgears.net/update-sites/qgears-opensource-repo-public/"/>
     </location>
   </locations>

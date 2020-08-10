@@ -16,6 +16,6 @@ location "https://download.eclipse.org/releases/2020-03/" eclipse-2020-03-mirror
 }
 location "https://buildserver.qgears.net/update-sites/qgears-opensource-repo-public/" qgears-opensource-repo {
 	//Opensource utils features and plugins
-	hu.qgears.commons [8.0.0.20200429105326,8.0.0.20200429105326]
+	hu.qgears.commons [8.1.0.20200810174027,8.1.0.20200810174027]
 }
 
