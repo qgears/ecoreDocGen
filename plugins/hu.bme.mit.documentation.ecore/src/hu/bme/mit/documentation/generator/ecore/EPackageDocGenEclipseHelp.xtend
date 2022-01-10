@@ -39,12 +39,19 @@ import org.eclipse.emf.ecore.ETypedElement
 import org.tautua.markdownpapers.ast.Document
 import org.tautua.markdownpapers.parser.Parser
 import org.w3c.dom.Element
+import javax.xml.transform.OutputKeys
 
 /**
  * 
  * @author chreex
  */
 class EPackageDocGenEclipseHelp implements IDocGenerator{
+	
+	
+	
+	private static final boolean fqnPackageNames = Boolean.getBoolean("ecoredoc.fqn.packagenames")
+	private static final String tocRootName = System.getProperty("ecoredoc.eclipsehelp.tocname","Metamodel documentation")
+	
 	private static final val NODE_ID_TOC = "toc";
 	private static final val NODE_ID_TOPIC = "topic";
 	
@@ -64,7 +71,7 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
 	
 	new() {
 		tocRoot.setAttribute("xmlns:htm", "http://www.w3.org/1999/xhtml");
-		tocRoot.setAttribute("label", "Wings metamodel documentation");
+		tocRoot.setAttribute("label",tocRootName);
 		toc.appendChild(tocRoot);
 	}
     
@@ -78,7 +85,11 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
 	}
     
     def private getFileNameForPackage(EPackage pckg) {
-    	ePackageFqName(pckg) + ".html"
+    	if (!fqnPackageNames && pckg.nsPrefix !== null && !pckg.nsPrefix.isEmpty){
+    		return pckg.nsPrefix + ".html"
+    	} else {
+	    	return ePackageFqName(pckg) + ".html"
+    	}
     }
     
     /**
@@ -710,7 +721,7 @@ class EPackageDocGenEclipseHelp implements IDocGenerator{
 		val transformer = transformerFactory.newTransformer
 		val domSource = new DOMSource(toc)
 		val streamResult = new StreamResult(new File(outputDir, "toc.xml"));
-		
+		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 		transformer.transform(domSource, streamResult);
 	}
 	
