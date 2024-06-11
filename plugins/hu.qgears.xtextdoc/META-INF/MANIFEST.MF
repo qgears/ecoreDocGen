@@ -12,10 +12,10 @@ Require-Bundle: org.eclipse.emf.ecore.xcore;bundle-version="1.2.2",
  hu.qgears.documentation,
  org.eclipse.emf.ecore,
  org.eclipse.xtext,
- org.eclipse.xtend,
  org.eclipse.emf.mwe.utils,
  org.eclipse.core.runtime,
- hu.qgears.commons;bundle-version="7.1.0"
+ hu.qgears.commons;bundle-version="7.1.0",
+ org.apache.log4j
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: hu.qgears.xtextdoc,
