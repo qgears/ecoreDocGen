@@ -1,21 +1,22 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1790950889303
+Bnd-LastModified: 1790952193708
 Build-Jdk: 21.0.12
 Built-By: agostoni
 Bundle-Description: The hu.qgears.documentation project.
 Bundle-ManifestVersion: 2
 Bundle-Name: hu.qgears.documentation
 Bundle-SymbolicName: hu.qgears.documentation
-Bundle-Version: 6.0.2.SNAPSHOT
+Bundle-Version: 7.0.0.SNAPSHOT
 Created-By: Apache Maven Bundle Plugin
-Export-Package: hu.qgears.documentation;uses:="org.eclipse.emf.common.ut
- il,org.eclipse.emf.ecore,org.eclipse.emf.ecore.util";version="6.0.2.SNA
- PSHOT"
+Export-Package: hu.qgears.documentation;version="6.0.2.SNAPSHOT";uses:="
+ org.eclipse.emf.common.util,org.eclipse.emf.ecore,org.eclipse.emf.ecore
+ .util"
 Import-Package: org.eclipse.emf.codegen.ecore.genmodel;version="[2.47,3)
  ",org.eclipse.emf.common.util;version="[2.46,3)",org.eclipse.emf.ecore;
  version="[2.36,3)",org.eclipse.emf.ecore.impl;version="[2.36,3)",org.ec
  lipse.emf.ecore.resource;version="[2.36,3)",org.eclipse.emf.ecore.resou
  rce.impl;version="[2.36,3)",org.eclipse.emf.ecore.util;version="[2.36,3
  )",org.eclipse.emf.ecore.xcore,org.eclipse.emf.ecore.xcore.resource
+Originally-Created-By: Apache Maven Bundle Plugin
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=11))"
 Tool: Bnd-2.3.0.201405100607

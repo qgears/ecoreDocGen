@@ -8,6 +8,9 @@ function error {
     exit 1
 }
 
+if [ $# -lt 1 ]; then
+	error "Please specify the version"
+fi
 
 mvn -f ${PARENT_DIR}  \
 -Dartifacts=hu.qgears.gendoc.aggregate,hu.qgears.gendoc.parent \

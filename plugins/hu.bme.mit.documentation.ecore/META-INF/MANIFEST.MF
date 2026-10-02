@@ -1,16 +1,18 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1790950895027
+Bnd-LastModified: 1790952199149
 Build-Jdk: 21.0.12
+Build-Jdk-Spec: 21
 Built-By: agostoni
 Bundle-Description: The hu.bme.mit.documentation.ecore project.
 Bundle-ManifestVersion: 2
 Bundle-Name: hu.bme.mit.documentation.ecore
 Bundle-SymbolicName: hu.bme.mit.documentation.ecore
-Bundle-Version: 6.0.2.SNAPSHOT
+Bundle-Version: 7.0.0.SNAPSHOT
 Created-By: Apache Maven Bundle Plugin
-Export-Package: hu.bme.mit.documentation.generator.ecore;uses:="org.ecli
- pse.emf.ecore,org.eclipse.emf.ecore.resource,org.tautua.markdownpapers,
- org.tautua.markdownpapers.ast,org.w3c.dom";version="6.0.2.SNAPSHOT"
+Export-Package: .gitignore;version="7.0.0.SNAPSHOT",hu.bme.mit.documenta
+ tion.generator.ecore;version="6.1.0.SNAPSHOT";uses:="org.eclipse.emf.ec
+ ore,org.eclipse.emf.ecore.resource,org.tautua.markdownpapers,org.tautua
+ .markdownpapers.ast,org.w3c.dom"
 Import-Package: com.google.common.base;version="[27.1,28)",com.google.co
  mmon.collect;version="[27.1,28)",hu.qgears.documentation;version="[6.0,
  7)",javax.xml.parsers,javax.xml.transform,javax.xml.transform.dom,javax
@@ -23,5 +25,6 @@ Import-Package: com.google.common.base;version="[27.1,28)",com.google.co
  2.21,3)",org.eclipse.xtext.xbase.lib;version="[2.21,3)",org.tautua.mark
  downpapers,org.tautua.markdownpapers.ast,org.tautua.markdownpapers.pars
  er,org.tautua.markdownpapers.util,org.w3c.dom
+Originally-Created-By: Maven Integration for Eclipse
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=11))"
 Tool: Bnd-2.3.0.201405100607
