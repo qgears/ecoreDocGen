@@ -1,16 +1,27 @@
 Manifest-Version: 1.0
+Bnd-LastModified: 1790950895027
+Build-Jdk: 21.0.12
+Built-By: agostoni
+Bundle-Description: The hu.bme.mit.documentation.ecore project.
 Bundle-ManifestVersion: 2
-Bundle-Name: Ecore Documentation Generator
-Bundle-SymbolicName: hu.bme.mit.documentation.ecore;singleton:=true
-Bundle-Version: 6.0.2.qualifier
-Export-Package: hu.bme.mit.documentation.generator.ecore
-Require-Bundle: org.eclipse.xtext.xbase.lib,
- org.apache.log4j;bundle-version="1.2.0",
- org.eclipse.emf.ecore.xmi;bundle-version="2.7.0",
- hu.qgears.documentation,
- org.eclipse.emf.ecore.xcore.lib;bundle-version="1.1.100"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Bundle-Vendor: Budapest University of Technology and Economics, Fault Tolerant Systems Research Group
-Bundle-ClassPath: lib/markdownpapers-core-1.2.7.jar,
- .
-
+Bundle-Name: hu.bme.mit.documentation.ecore
+Bundle-SymbolicName: hu.bme.mit.documentation.ecore
+Bundle-Version: 6.0.2.SNAPSHOT
+Created-By: Apache Maven Bundle Plugin
+Export-Package: hu.bme.mit.documentation.generator.ecore;uses:="org.ecli
+ pse.emf.ecore,org.eclipse.emf.ecore.resource,org.tautua.markdownpapers,
+ org.tautua.markdownpapers.ast,org.w3c.dom";version="6.0.2.SNAPSHOT"
+Import-Package: com.google.common.base;version="[27.1,28)",com.google.co
+ mmon.collect;version="[27.1,28)",hu.qgears.documentation;version="[6.0,
+ 7)",javax.xml.parsers,javax.xml.transform,javax.xml.transform.dom,javax
+ .xml.transform.stream,org.apache.log4j;version="[1.2,2)",org.eclipse.em
+ f.common.notify;version="[2.46,3)",org.eclipse.emf.common.util;version=
+ "[2.46,3)",org.eclipse.emf.ecore;version="[2.36,3)",org.eclipse.emf.eco
+ re.plugin;version="[2.36,3)",org.eclipse.emf.ecore.resource;version="[2
+ .36,3)",org.eclipse.emf.ecore.resource.impl;version="[2.36,3)",org.ecli
+ pse.emf.ecore.util;version="[2.36,3)",org.eclipse.xtend2.lib;version="[
+ 2.21,3)",org.eclipse.xtext.xbase.lib;version="[2.21,3)",org.tautua.mark
+ downpapers,org.tautua.markdownpapers.ast,org.tautua.markdownpapers.pars
+ er,org.tautua.markdownpapers.util,org.w3c.dom
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=11))"
+Tool: Bnd-2.3.0.201405100607

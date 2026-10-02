@@ -1,82 +1,389 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
-	
-	<parent>
-		<groupId>hu.qgears</groupId>
-		<artifactId>root</artifactId>
-		<version>1.0.0</version>
-		<relativePath>../repository-builder/parent-poms/root</relativePath>
-	</parent>
+
+
 	<groupId>hu.qgears</groupId>
 	<artifactId>hu.qgears.gendoc.parent</artifactId>
 	<version>6.0.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	
+	<url>${project_url}/modules/</url>
+	<description>The ${project.artifactId} project.</description>
+
 	<properties>
-		<xtend-version>2.21.0</xtend-version>
+		<xtext-version>2.21.0</xtext-version>
+		<xtend-version>2.37.0</xtend-version>
+		<junit-version>4.8.2</junit-version>
+		<clean-version>2.6.1</clean-version>
+		<exec-plugin-version>3.0.0</exec-plugin-version>
+		<opensource-utils-version>[12.5.1,12.5.2)</opensource-utils-version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<!-- The -source and -target arguments of Java compiler. -->
+		<java-trg-version>11</java-trg-version>
+		<java-src-version>11</java-src-version>
+		<maven-complier-plugin-version>3.14.1</maven-complier-plugin-version>
+		<maven-surefire-plugin-version>3.5.4</maven-surefire-plugin-version>
+		<qgears-opensource-maven-public-url>qgears-opensource-maven-public-url</qgears-opensource-maven-public-url>
+		<qgears-opensource-maven-nightly-url>qgears-opensource-maven-nightly-url</qgears-opensource-maven-nightly-url>
+		<repositoryRoot>${project.basedir}/${project.parent.relativePath}/../../</repositoryRoot>
+		<site-plugin-version>3.21.0</site-plugin-version>
+		<stagingDirectory>${user.home}/os-report</stagingDirectory>
+		<project_url>file://${stagingDirectory}</project_url>
+		<cve.database.folder>${user.home}/.m2/repository/cvedb/</cve.database.folder>
 	</properties>
-	
+
+	<dependencyManagement>
+		<dependencies>
+			<!-- our modules-->
+			<dependency>
+			    <groupId>hu.qgears</groupId>
+			    <artifactId>hu.qgears.documentation</artifactId>
+			    <version>${project.version}</version>
+			</dependency>
+			<dependency>
+			    <groupId>hu.qgears</groupId>
+			    <artifactId>hu.bme.mit.documentation.ecore</artifactId>
+			    <version>${project.version}</version>
+			</dependency>
+			<dependency>
+			    <groupId>hu.qgears</groupId>
+			    <artifactId>hu.qgears.xtextdoc</artifactId>
+			    <version>${project.version}</version>
+			</dependency>
+			
+			<!-- External dependencies -->
+			<dependency>
+				<groupId>log4j</groupId>
+				<artifactId>log4j</artifactId>
+				<version>1.2.17</version>
+			</dependency>
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>${junit-version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>hu.qgears</groupId>
+				<artifactId>hu.qgears.commons</artifactId>
+				<version>${opensource-utils-version}</version>
+			</dependency>
+			
+			<dependency>
+			    <groupId>hu.qgears</groupId>
+			    <artifactId>hu.qgears.documentation</artifactId>
+			    <version>${project.version}</version>
+			</dependency>
+			
+			<dependency>
+			    <groupId>org.tautua.markdownpapers</groupId>
+			    <artifactId>markdownpapers-core</artifactId>
+			    <version>1.2.7</version>
+			</dependency>
+			<dependency>
+			    <groupId>org.eclipse.xtext</groupId>
+	    		<artifactId>org.eclipse.xtext.xbase.lib</artifactId>
+	    		<version>${xtext-version}</version>
+			</dependency>
+			<dependency>
+			    <groupId>org.eclipse.xtext</groupId>
+	    		<artifactId>org.eclipse.xtext.ui</artifactId>
+	    		<version>${xtext-version}</version>
+			</dependency>
+			<dependency>
+			    <groupId>org.eclipse.xtend</groupId>
+			    <artifactId>org.eclipse.xtend.lib</artifactId>
+			    <version>${xtend-version}</version>
+			</dependency>
+				
+			<dependency>
+			    <groupId>org.eclipse.emf</groupId>
+			    <artifactId>org.eclipse.emf.ecore</artifactId>
+			    <version>2.36.0</version>
+			</dependency>
+			<dependency>
+			    <groupId>org.eclipse.emf</groupId>
+			    <artifactId>org.eclipse.emf.ecore.xcore.lib</artifactId>
+			    <version>1.7.0</version>
+			</dependency>
+			<dependency>
+			    <groupId>org.eclipse.emf</groupId>
+			    <artifactId>org.eclipse.emf.ecore.xcore</artifactId>
+			    <version>1.13.0</version>
+			</dependency>
+			<dependency>
+			    <groupId>org.eclipse.emf</groupId>
+			    <artifactId>org.eclipse.emf.mwe.utils</artifactId>
+			    <version>1.11.0</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
 	<build>
+		<!-- source lives directly under src/ (PDE layout), not the Maven-standard src/main/java -->
+		<sourceDirectory>src</sourceDirectory>
+		<resources>
+			<resource>
+				<directory>src</directory>
+				<excludes>
+					<exclude>**/*.java</exclude>
+				</excludes>
+			</resource>
+		</resources>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-site-plugin</artifactId>
+					<version>${site-plugin-version}</version>
+					<configuration>
+						<skip>${maven-site-plugin.skip}</skip>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>exec-maven-plugin</artifactId>
+					<version>${exec-plugin-version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.eclipse.xtend</groupId>
+					<artifactId>xtend-maven-plugin</artifactId>
+					<version>${xtend-version}</version>
+					<!-- optionally you can configure a different target folder -->
+					<executions>
+						<execution>
+							<goals>
+								<goal>compile</goal>
+								<goal>testCompile</goal>
+							</goals>
+						</execution>
+					</executions>
+					<configuration>
+						<outputDirectory>${basedir}/xtend-gen</outputDirectory>
+					</configuration>
+					<dependencies>
+					</dependencies>
+				</plugin>
+			</plugins>
+
+		</pluginManagement>
 		<plugins>
 			<plugin>
-			   <groupId>org.eclipse.tycho</groupId>
-			   <artifactId>target-platform-configuration</artifactId>
-			   <version>${tycho-version}</version>
-			   <configuration>
-				  <target>
-					 <artifact>
-						<groupId>hu.qgears.gendoc</groupId>
-						<artifactId>hu.qgears.gendoc.target</artifactId>
-						<version>0.9.9-SNAPSHOT</version>
-					 </artifact>
-				  </target>
-			   </configuration>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven-complier-plugin-version}</version>
+				<configuration>
+					<source>${java-src-version}</source>
+					<target>${java-trg-version}</target>
+					<release>${java-trg-version}</release>
+				</configuration>
 			</plugin>
-		</plugins>
-	<pluginManagement>
-		<plugins>
 			<plugin>
-				<groupId>org.eclipse.xtend</groupId>
-				<artifactId>xtend-maven-plugin</artifactId>
-				<version>${xtend-version}</version>
-				<!-- optionally you can configure a different target folder -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${maven-surefire-plugin-version}</version>
+				<configuration>
+					<!-- Do not fail the build on broken tests -->
+					<testFailureIgnore>true</testFailureIgnore>
+					<!-- Prevent failing build if no test cases found (typical
+					case in second execution, where integration tests will be
+					run) -->
+					<failIfNoTests>false</failIfNoTests>
+					<!-- Killing to long tests-->
+					<forkedProcessTimeoutInSeconds>${test-timeout-sec}</forkedProcessTimeoutInSeconds>
+					<systemPropertyVariables>
+						<log4j.configuration>
+							file://${project.basedir}/${project.parent.relativePath}/log4j.conf</log4j.configuration>
+					</systemPropertyVariables>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>flatten-maven-plugin</artifactId>
+				<version>1.4.1</version>
+				<configuration>
+				</configuration>
 				<executions>
+					<!-- enable flattening -->
 					<execution>
+						<id>flatten</id>
+						<phase>process-resources</phase>
 						<goals>
-							<goal>compile</goal>
-							<goal>testCompile</goal>
+							<goal>flatten</goal>
+						</goals>
+					</execution>
+					<!-- ensure proper cleanup -->
+					<execution>
+						<id>flatten.clean</id>
+						<goals>
+							<goal>clean</goal>
 						</goals>
 					</execution>
 				</executions>
-				<configuration>
-					<outputDirectory>${basedir}/xtend-gen</outputDirectory>
-				</configuration>
-				<dependencies>
-				</dependencies>
 			</plugin>
-		</plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>2.7</version>
+			</plugin>
 
-	</pluginManagement>
+
+		</plugins>
 	</build>
 	<profiles>
-            <!-- This profile is activated when the version bump script is executed.
-                    It adds each the aggregator pom of the component (../../) as a child module 
-                    of this component, so the tycho-version-plugin will be able to detect parent-child 
-                    relationships propertly, so also changes the version string in the parent pom reference.
-            --> 
-            <profile>
-                    <id>versionbump</id>
-                    <activation>
-                            <property>
-                                    <name>newVersion</name>
-                            </property>
-                    </activation>
-                    <modules>
-                            <module>../../</module>
-                    </modules>
-            </profile>
-    </profiles>
+		<!-- profile for enabling source bundle generation -->
+		<profile>
+			<id>regenmanifest</id>
+			<activation>
+				<property>
+					<name>regenmanifest</name>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.felix</groupId>
+						<artifactId>maven-bundle-plugin</artifactId>
+						<version>2.5.0</version>
+						<extensions>true</extensions>
+
+						<configuration>
+							<manifestLocation>META-INF</manifestLocation>
+							<instructions>
+								<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+								<Bundle-Version>${project.version}</Bundle-Version>
+								<Export-Package>*</Export-Package>
+								<Include-Resource>src/main/resources</Include-Resource>
+								<Require-Capability>
+									osgi.ee;filter:="(&amp;(osgi.ee=JavaSE)(version=11))"
+								</Require-Capability>
+							</instructions>
+						</configuration>
+						<executions>
+							<execution>
+								<id>gen-manifest</id>
+								<phase>process-classes</phase>
+								<goals>
+									<goal>manifest</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>packagemanifest</id>
+			<activation>
+				<file>
+					<exists>META-INF/MANIFEST.MF</exists>
+				</file>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-jar-plugin</artifactId>
+						<version>2.4</version>
+						<configuration>
+							<archive>
+								<manifestFile>META-INF/MANIFEST.MF</manifestFile>
+							</archive>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>packageSources</id>
+			<activation>
+				<property>
+					<name>!skip-sources</name>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>3.3.1</version>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<!-- good default phase, runs before deploy -->
+								<phase>verify</phase>
+								<goals>
+									<goal>jar-no-fork</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+
+			</build>
+		</profile>
+		<!-- This profile is activated when the version bump script is executed.
+			It adds each the aggregator pom of the component (../../) as a child module 
+			of this component, so the tycho-version-plugin will be able to detect
+	parent-child 
+			relationships propertly, so also changes the version string in the parent pom
+	reference.
+		-->
+		<profile>
+			<id>versionbump</id>
+			<activation>
+				<property>
+					<name>newVersion</name>
+				</property>
+			</activation>
+			<modules>
+				<module>../../</module>
+			</modules>
+		</profile>
+	</profiles>
+	<repositories>
+		<repository>
+			<id>qgears-opensource-maven-public</id>
+			<name>Q-Gears opensource maven repository</name>
+			<url>${qgears-opensource-maven-repo-public-url}</url>
+			<layout>default</layout>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+<!--		<repository>-->
+<!--			<id>qgears-opensource-maven-nightly</id>-->
+<!--			<name>Q-Gears opensource maven repository snapshots</name>-->
+<!--			<url>${qgears-opensource-maven-repo-nightly-url}</url>-->
+<!--			<layout>default</layout>-->
+<!--			<snapshots>-->
+<!--				<enabled>true</enabled>-->
+<!--				<updatePolicy>never</updatePolicy>-->
+<!--			</snapshots>-->
+<!--		</repository>-->
+	</repositories>
+
+	<distributionManagement>
+		<repository>
+			<id>qgears-opensource-maven-public</id>
+			<name>Q-Gears opensource maven repository</name>
+			<url>${qgears-opensource-maven-public-url}</url>
+			<layout>default</layout>
+		</repository>
+		<snapshotRepository>
+			<id>qgears-opensource-maven-nightly</id>
+			<name>Q-Gears opensource maven repository snapshots</name>
+			<url>${qgears-opensource-maven-nightly-url}</url>
+			<layout>default</layout>
+		</snapshotRepository>
+		<site>
+			<id>opensource.site</id>
+			<name>Opensource utils website</name>
+			<url>${project_url}/modules/</url>
+		</site>
+	</distributionManagement>
 </project>

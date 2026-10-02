@@ -10,3 +10,7 @@ MANIFEST.MF_gen
 *.jar
 *.war
 *.ear
+#Experiment with flattened poms
+**/.flattened-pom.xml
+#produced by maven version plugin
+**/pom.xml.versionsBackup
