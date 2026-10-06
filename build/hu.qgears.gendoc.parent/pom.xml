@@ -14,7 +14,7 @@
 	<description>The ${project.artifactId} project.</description>
 
 	<properties>
-		<xtext-version>2.21.0</xtext-version>
+		<xtext-version>2.37.0</xtext-version>
 		<xtend-version>2.37.0</xtend-version>
 		<junit-version>4.8.2</junit-version>
 		<clean-version>2.6.1</clean-version>
@@ -70,12 +70,6 @@
 				<groupId>hu.qgears</groupId>
 				<artifactId>hu.qgears.commons</artifactId>
 				<version>${opensource-utils-version}</version>
-			</dependency>
-			
-			<dependency>
-			    <groupId>hu.qgears</groupId>
-			    <artifactId>hu.qgears.documentation</artifactId>
-			    <version>${project.version}</version>
 			</dependency>
 			
 			<dependency>
@@ -257,6 +251,7 @@
 								<Bundle-Version>${project.version}</Bundle-Version>
 								<Export-Package>*</Export-Package>
 								<Include-Resource>src/main/resources</Include-Resource>
+								<Import-Package>*;version=!</Import-Package>
 								<Require-Capability>
 									osgi.ee;filter:="(&amp;(osgi.ee=JavaSE)(version=11))"
 								</Require-Capability>

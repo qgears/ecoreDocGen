@@ -1,7 +1,6 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1790952199149
+Bnd-LastModified: 1791299680629
 Build-Jdk: 21.0.12
-Build-Jdk-Spec: 21
 Built-By: agostoni
 Bundle-Description: The hu.bme.mit.documentation.ecore project.
 Bundle-ManifestVersion: 2
@@ -9,22 +8,16 @@ Bundle-Name: hu.bme.mit.documentation.ecore
 Bundle-SymbolicName: hu.bme.mit.documentation.ecore
 Bundle-Version: 7.0.0.SNAPSHOT
 Created-By: Apache Maven Bundle Plugin
-Export-Package: .gitignore;version="7.0.0.SNAPSHOT",hu.bme.mit.documenta
- tion.generator.ecore;version="6.1.0.SNAPSHOT";uses:="org.eclipse.emf.ec
- ore,org.eclipse.emf.ecore.resource,org.tautua.markdownpapers,org.tautua
- .markdownpapers.ast,org.w3c.dom"
-Import-Package: com.google.common.base;version="[27.1,28)",com.google.co
- mmon.collect;version="[27.1,28)",hu.qgears.documentation;version="[6.0,
- 7)",javax.xml.parsers,javax.xml.transform,javax.xml.transform.dom,javax
- .xml.transform.stream,org.apache.log4j;version="[1.2,2)",org.eclipse.em
- f.common.notify;version="[2.46,3)",org.eclipse.emf.common.util;version=
- "[2.46,3)",org.eclipse.emf.ecore;version="[2.36,3)",org.eclipse.emf.eco
- re.plugin;version="[2.36,3)",org.eclipse.emf.ecore.resource;version="[2
- .36,3)",org.eclipse.emf.ecore.resource.impl;version="[2.36,3)",org.ecli
- pse.emf.ecore.util;version="[2.36,3)",org.eclipse.xtend2.lib;version="[
- 2.21,3)",org.eclipse.xtext.xbase.lib;version="[2.21,3)",org.tautua.mark
- downpapers,org.tautua.markdownpapers.ast,org.tautua.markdownpapers.pars
- er,org.tautua.markdownpapers.util,org.w3c.dom
-Originally-Created-By: Maven Integration for Eclipse
+Export-Package: hu.bme.mit.documentation.generator.ecore;uses:="org.ecli
+ pse.emf.ecore,org.eclipse.emf.ecore.resource,org.tautua.markdownpapers,
+ org.tautua.markdownpapers.ast,org.w3c.dom";version="7.0.0.SNAPSHOT"
+Import-Package: com.google.common.collect,hu.qgears.documentation,javax.
+ xml.parsers,javax.xml.transform,javax.xml.transform.dom,javax.xml.trans
+ form.stream,org.apache.log4j,org.eclipse.emf.common.notify,org.eclipse.
+ emf.common.util,org.eclipse.emf.ecore,org.eclipse.emf.ecore.plugin,org.
+ eclipse.emf.ecore.resource,org.eclipse.emf.ecore.resource.impl,org.ecli
+ pse.emf.ecore.util,org.eclipse.xtend2.lib,org.eclipse.xtext.xbase.lib,o
+ rg.tautua.markdownpapers,org.tautua.markdownpapers.ast,org.tautua.markd
+ ownpapers.parser,org.tautua.markdownpapers.util,org.w3c.dom
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=11))"
 Tool: Bnd-2.3.0.201405100607
