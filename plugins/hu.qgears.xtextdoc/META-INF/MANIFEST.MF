@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1791299681616
+Bnd-LastModified: 1791377463766
 Build-Jdk: 21.0.12
 Built-By: agostoni
 Bundle-Description: The hu.qgears.xtextdoc project.
@@ -16,19 +16,19 @@ Export-Package: hu.qgears.xtextdoc.editor;uses:="org.eclipse.emf.ecore,o
  xtdoc.util,org.eclipse.core.resources,org.eclipse.core.runtime,org.ecli
  pse.emf.ecore,org.eclipse.emf.ecore.resource,org.eclipse.xtext";version
  ="7.0.0.SNAPSHOT",hu.qgears.xtextdoc.keywords;uses:="hu.qgears.xtextdoc
- .examples,hu.qgears.xtextdoc.util,org.eclipse.emf.ecore,org.eclipse.emf
- .ecore.resource,org.eclipse.equinox.app,org.eclipse.xtext";version="7.0
- .0.SNAPSHOT",hu.qgears.xtextdoc.util;uses:="org.eclipse.emf.ecore,org.e
- clipse.xtext";version="7.0.0.SNAPSHOT"
+ .examples,hu.qgears.xtextdoc.util,joptsimple.annot,org.eclipse.emf.ecor
+ e,org.eclipse.emf.ecore.resource,org.eclipse.equinox.app,org.eclipse.xt
+ ext";version="7.0.0.SNAPSHOT",hu.qgears.xtextdoc.util;uses:="org.eclips
+ e.emf.ecore,org.eclipse.xtext";version="7.0.0.SNAPSHOT"
 Import-Package: com.google.inject,hu.bme.mit.documentation.generator.eco
- re,hu.qgears.commons,hu.qgears.documentation,org.apache.commons.cli,org
- .apache.log4j,org.eclipse.core.resources,org.eclipse.core.runtime,org.e
- clipse.emf.common.util,org.eclipse.emf.ecore,org.eclipse.emf.ecore.impl
- ,org.eclipse.emf.ecore.plugin,org.eclipse.emf.ecore.resource,org.eclips
- e.emf.ecore.util,org.eclipse.emf.ecore.xcore,org.eclipse.emf.mwe.utils,
- org.eclipse.equinox.app,org.eclipse.xtext,org.eclipse.xtext.documentati
- on,org.eclipse.xtext.naming,org.eclipse.xtext.nodemodel,org.eclipse.xte
- xt.nodemodel.impl,org.eclipse.xtext.nodemodel.util,org.eclipse.xtext.pa
- rser,org.eclipse.xtext.resource,org.eclipse.xtext.util
+ re,hu.qgears.commons,hu.qgears.documentation,joptsimple.annot,org.apach
+ e.commons.cli,org.apache.log4j,org.eclipse.core.resources,org.eclipse.c
+ ore.runtime,org.eclipse.emf.common.util,org.eclipse.emf.ecore,org.eclip
+ se.emf.ecore.impl,org.eclipse.emf.ecore.plugin,org.eclipse.emf.ecore.re
+ source,org.eclipse.emf.ecore.util,org.eclipse.emf.ecore.xcore,org.eclip
+ se.emf.mwe.utils,org.eclipse.equinox.app,org.eclipse.xtext,org.eclipse.
+ xtext.documentation,org.eclipse.xtext.naming,org.eclipse.xtext.nodemode
+ l,org.eclipse.xtext.nodemodel.impl,org.eclipse.xtext.nodemodel.util,org
+ .eclipse.xtext.parser,org.eclipse.xtext.resource,org.eclipse.xtext.util
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=11))"
 Tool: Bnd-2.3.0.201405100607

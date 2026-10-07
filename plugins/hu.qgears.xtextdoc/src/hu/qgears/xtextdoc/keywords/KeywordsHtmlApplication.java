@@ -1,6 +1,8 @@
 package hu.qgears.xtextdoc.keywords;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
@@ -58,7 +60,7 @@ public class KeywordsHtmlApplication implements IApplication {
 			args.xtext = parseStr(sourceFolder, xtext);
 			args.output = new File(outFolder);
 			args.examples.examplesFolders = parseStr(sourceFolder, exampleFolder);
-			args.examples.exampleExtensions = exExt.split(ARG_LIST_SEPARATOR);
+			args.examples.exampleExtensions = Arrays.asList(exExt.split(ARG_LIST_SEPARATOR));
 			args.enableMetaDocGen = cli.hasOption(ARG_ENABLE_METADOC_GEN);
 			keywordsHtml.run(args);
 			System.out.println("Keywords HTML documentation generation finished without errors.");
@@ -71,13 +73,13 @@ public class KeywordsHtmlApplication implements IApplication {
 		return EXIT_OK;
 	}
 
-	private File[] parseStr (String sourceFolder, String str) {
+	private List<File> parseStr (String sourceFolder, String str) {
 		String[] pieces = str.split(ARG_LIST_SEPARATOR);
 		File[] files = new File[pieces.length];
 		for (int i = 0; i < pieces.length; i++) {
 			files[i] = new File(sourceFolder, pieces[i]);
 		}
-		return files;
+		return Arrays.asList(files);
 	}
 	
 	@Override

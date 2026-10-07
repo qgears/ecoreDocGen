@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1791299675130
+Bnd-LastModified: 1791377457563
 Build-Jdk: 21.0.12
 Built-By: agostoni
 Bundle-Description: The hu.qgears.documentation project.

@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1791299680629
+Bnd-LastModified: 1791377462850
 Build-Jdk: 21.0.12
 Built-By: agostoni
 Bundle-Description: The hu.bme.mit.documentation.ecore project.

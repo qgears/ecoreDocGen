@@ -3,7 +3,6 @@ package hu.qgears.xtextdoc.examples;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import hu.qgears.commons.MultiMapHashImpl;
@@ -13,12 +12,12 @@ import hu.qgears.commons.UtilString;
 public class ExamplesParser {
 	public static class Args
 	{
-		public File[] examplesFolders;
-		public String[] exampleExtensions;
+		public List<File> examplesFolders;
+		public List<String> exampleExtensions;
 		@Override
 		public String toString() {
-			return "Args [examplesFolders=" + Arrays.toString(examplesFolders) + ", exampleExtensions="
-					+ Arrays.toString(exampleExtensions) + "]";
+			return "Args [examplesFolders=" + examplesFolders + ", exampleExtensions="
+					+ exampleExtensions + "]";
 		}
 		
 	}

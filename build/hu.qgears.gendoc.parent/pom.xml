@@ -19,7 +19,7 @@
 		<junit-version>4.8.2</junit-version>
 		<clean-version>2.6.1</clean-version>
 		<exec-plugin-version>3.0.0</exec-plugin-version>
-		<opensource-utils-version>[12.5.1,12.5.2)</opensource-utils-version>
+		<opensource-utils-version>[12.5.1,)</opensource-utils-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<!-- The -source and -target arguments of Java compiler. -->
 		<java-trg-version>11</java-trg-version>
@@ -71,6 +71,11 @@
 				<artifactId>hu.qgears.commons</artifactId>
 				<version>${opensource-utils-version}</version>
 			</dependency>
+			<dependency>
+				<groupId>hu.qgears</groupId>
+				<artifactId>joptsimple</artifactId>
+				<version>[2.0.0,)</version>
+			</dependency>
 			
 			<dependency>
 			    <groupId>org.tautua.markdownpapers</groupId>
@@ -82,10 +87,11 @@
 	    		<artifactId>org.eclipse.xtext.xbase.lib</artifactId>
 	    		<version>${xtext-version}</version>
 			</dependency>
+			
 			<dependency>
-			    <groupId>org.eclipse.xtext</groupId>
-	    		<artifactId>org.eclipse.xtext.ui</artifactId>
-	    		<version>${xtext-version}</version>
+				<groupId>org.eclipse.xtext</groupId>
+				<artifactId>org.eclipse.xtext</artifactId>
+				<version>${xtext-version}</version>
 			</dependency>
 			<dependency>
 			    <groupId>org.eclipse.xtend</groupId>
@@ -350,16 +356,6 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
-<!--		<repository>-->
-<!--			<id>qgears-opensource-maven-nightly</id>-->
-<!--			<name>Q-Gears opensource maven repository snapshots</name>-->
-<!--			<url>${qgears-opensource-maven-repo-nightly-url}</url>-->
-<!--			<layout>default</layout>-->
-<!--			<snapshots>-->
-<!--				<enabled>true</enabled>-->
-<!--				<updatePolicy>never</updatePolicy>-->
-<!--			</snapshots>-->
-<!--		</repository>-->
 	</repositories>
 
 	<distributionManagement>

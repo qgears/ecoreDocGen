@@ -2,7 +2,6 @@ package hu.qgears.xtextdoc.keywords;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,14 +27,20 @@ import hu.bme.mit.documentation.generator.ecore.EPackageDocGenHtml;
 import hu.bme.mit.documentation.generator.ecore.IDocGenerator;
 import hu.bme.mit.documentation.generator.ecore.UtilDocGenerator;
 import hu.qgears.xtextdoc.examples.ExamplesParser;
+import joptsimple.annot.AnnotatedClass;
+import joptsimple.annot.JODelegate;
+import joptsimple.annot.JOSkip;
 
 public class KeywordsHtml {
 	public class Args {
-		public File[] xcore;
-		public File[] xtext;
+		public List<File> xcore;
+		public List<File> xtext;
+		@JODelegate(prefix = "")
 		public ExamplesParser.Args examples=new ExamplesParser.Args();
 		public File output;
 		public boolean enableMetaDocGen;
+		
+		@JOSkip()
 		public String[] skippedKeys=new String[]
 				{
 					"{", "}",
@@ -48,33 +53,20 @@ public class KeywordsHtml {
 
 		@Override
 		public String toString() {
-			return "Args [xcore=" + Arrays.toString(xcore) + ", xtext=" + Arrays.toString(xtext) + ", examples="
+			return "Args [xcore=" + xcore + ", xtext=" + xtext + ", examples="
 					+ examples + ", output=" + output + "]";
 		}
 		
-	}
-	private Args createArgs() {
-		Args a=new Args();
-		File sourceFolder=new File (""); //FIXME parameter
-		a.xcore=new File[]{
-				new File(sourceFolder, ""),
-				new File(sourceFolder, ""),}; //FIXME parameter
-		a.xtext=new File[]{
-				new File(sourceFolder, ""),
-				new File(sourceFolder, ""), //FIXME parameter
-		};
-		a.output=new File("/tmp/doc");
-		a.examples.examplesFolders=new File[]{
-				new File(sourceFolder, "") //FIXME parameter
-		};
-		a.examples.exampleExtensions=new String[]{""}; //FIXME parameter
-		return a;
 	}
 	protected Set<String> skippedKeys=new HashSet<>();
 
 	public static void main(String[] args) throws Exception {
 		KeywordsHtml keywordsHtml = new KeywordsHtml();
-		Args a = keywordsHtml.createArgs();
+		AnnotatedClass ac = new AnnotatedClass();
+		Args a = keywordsHtml.new Args();
+		ac.parseAnnotations(a);
+		ac.parseArgs(args);
+		System.out.println("Args: " + a);
 		keywordsHtml.run(a);
 	}
 	

@@ -19,9 +19,12 @@
 			<artifactId>hu.bme.mit.documentation.ecore</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>hu.qgears</groupId>
+			<artifactId>joptsimple</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.eclipse.xtext</groupId>
 			<artifactId>org.eclipse.xtext</artifactId>
-			<version>${xtext-version}</version>
 		</dependency>
 	</dependencies>
 </project>
